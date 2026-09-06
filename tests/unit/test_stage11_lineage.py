@@ -6,6 +6,7 @@ from uuid import uuid4
 import pytest
 from pydantic import ValidationError
 
+from packages.experiments.fingerprint import experiment_fingerprint
 from packages.experiments.lineage import AntiOverfittingPolicy, LineageValidationError, dataset_fingerprint, lineage_fingerprint, validate_parent_lineage, validate_partition_isolation
 from packages.experiments.models import DatasetSplitConfig, ExperimentConfig
 from packages.experiments.runner import ExperimentRunner
@@ -26,6 +27,13 @@ def test_dataset_fingerprint_is_stable_and_content_sensitive():
     assert dataset_fingerprint(data) == dataset_fingerprint(data)
     assert dataset_fingerprint(data) != dataset_fingerprint([*data[:-1], replace(data[-1], close=Decimal("999"))])
     assert dataset_fingerprint(data) != dataset_fingerprint(list(reversed(data)))
+
+
+def test_experiment_identity_changes_when_dataset_changes():
+    experiment = config()
+    first = experiment_fingerprint(experiment, dataset_fingerprint(candles()))
+    changed = [*candles()[:-1], replace(candles()[-1], close=Decimal("999"))]
+    assert first != experiment_fingerprint(experiment, dataset_fingerprint(changed))
 
 
 def test_partition_isolation_rejects_overlap_and_accepts_chronological_data():
@@ -51,6 +59,12 @@ def test_child_lineage_requires_same_session_and_next_generation():
         validate_parent_lineage(session_id=session_id, generation=1, parent_experiment_id=parent_id, parent_session_id=uuid4(), parent_generation=0)
     with pytest.raises(LineageValidationError, match=r"generation \+ 1"):
         validate_parent_lineage(session_id=session_id, generation=3, parent_experiment_id=parent_id, parent_session_id=session_id, parent_generation=0)
+
+
+def test_self_parent_is_rejected():
+    experiment_id = uuid4()
+    with pytest.raises(LineageValidationError, match="own parent"):
+        validate_parent_lineage(session_id=uuid4(), generation=1, parent_experiment_id=experiment_id, parent_session_id=uuid4(), parent_generation=0, experiment_id=experiment_id)
 
 
 def test_lineage_fingerprint_is_deterministic_and_parent_sensitive():

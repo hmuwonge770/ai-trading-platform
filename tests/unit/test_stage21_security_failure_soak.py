@@ -58,7 +58,7 @@ def test_ledger_post_is_idempotent_under_repeated_delivery() -> None:
     first = ledger.post(tx)
     for _ in range(1000):
         assert ledger.post(tx) == first
-    assert ledger.balance("cash", "USDT").debit == Decimal("100")
+    assert ledger.balance("cash", "USDT").balance == Decimal("100")
 
 
 def test_failure_soak_does_not_hide_later_failures() -> None:

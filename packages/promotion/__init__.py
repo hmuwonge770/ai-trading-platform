@@ -15,6 +15,7 @@ from .domain import (
 from .execution_store import PromotionAuthorizationStore
 from .invalidation import AuthorizationBinding, AuthorizationValidator
 from .preflight import LivePreflight, PreflightContext, PreflightResult
+from .readiness import ProductionReadinessGate, ProductionReadinessReport, ReadinessEvidence, ReadinessGate
 from .repository import PromotionRepository
 from .service import PromotionService
 
@@ -23,5 +24,6 @@ __all__ = [
     "CapitalAllocation", "Promotion", "PromotionAuthorizationStore", "PromotionRepository",
     "PromotionService", "PromotionStage", "PromotionStatus", "StrategyVersion",
     "CanaryController", "CanaryLimits", "CanaryState", "AuthorizationBinding", "AuthorizationValidator",
-    "LivePreflight", "PreflightContext", "PreflightResult",
+    "LivePreflight", "PreflightContext", "PreflightResult", "ProductionReadinessGate",
+    "ProductionReadinessReport", "ReadinessEvidence", "ReadinessGate",
 ]

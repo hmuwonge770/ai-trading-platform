@@ -8,6 +8,11 @@ from packages.database.models import (
     Job,
     JobStatus,
     MarketCandle,
+    Portfolio,
+    PortfolioBalance,
+    PortfolioMoneyMovement,
+    PortfolioPosition,
+    PortfolioStatus,
     ResearchHypothesis,
     ResearchSession,
     ResearchSessionStatus,
@@ -18,6 +23,7 @@ from packages.database.models import (
 
 __all__ = [
     "AIReview", "BacktestResult", "Experiment", "ExperimentStatus", "Job", "JobStatus",
-    "MarketCandle", "ResearchHypothesis", "ResearchSession", "ResearchSessionStatus",
-    "Strategy", "StrategyStatus", "StrategyVersion",
+    "MarketCandle", "Portfolio", "PortfolioBalance", "PortfolioMoneyMovement",
+    "PortfolioPosition", "PortfolioStatus", "ResearchHypothesis", "ResearchSession",
+    "ResearchSessionStatus", "Strategy", "StrategyStatus", "StrategyVersion",
 ]

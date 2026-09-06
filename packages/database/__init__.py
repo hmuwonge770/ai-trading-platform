@@ -20,10 +20,11 @@ from packages.database.models import (
     StrategyStatus,
     StrategyVersion,
 )
+from packages.database.outbox import OutboxEvent, OutboxStatus
 
 __all__ = [
     "AIReview", "BacktestResult", "Experiment", "ExperimentStatus", "Job", "JobStatus",
-    "MarketCandle", "Portfolio", "PortfolioBalance", "PortfolioMoneyMovement",
-    "PortfolioPosition", "PortfolioStatus", "ResearchHypothesis", "ResearchSession",
-    "ResearchSessionStatus", "Strategy", "StrategyStatus", "StrategyVersion",
+    "MarketCandle", "OutboxEvent", "OutboxStatus", "Portfolio", "PortfolioBalance",
+    "PortfolioMoneyMovement", "PortfolioPosition", "PortfolioStatus", "ResearchHypothesis",
+    "ResearchSession", "ResearchSessionStatus", "Strategy", "StrategyStatus", "StrategyVersion",
 ]

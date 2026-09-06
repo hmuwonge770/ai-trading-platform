@@ -1,0 +1,1 @@
+Stage 32 implements the deterministic live-canary gate and binds the canary lifecycle to an approved promotion authorization hash. No exchange credentials or direct live exchange calls are added by this stage.

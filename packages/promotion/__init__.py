@@ -14,6 +14,7 @@ from .domain import (
     StrategyVersion,
 )
 from .execution_store import PromotionAuthorizationStore
+from .full_live import FullLiveController, FullLiveEvidence, FullLiveGate, FullLiveGateReport
 from .invalidation import AuthorizationBinding, AuthorizationValidator
 from .limited_live import LimitedLiveController, LimitedLiveLimits, LimitedLiveState
 from .live_authorization import LiveAuthorization, TwoPersonLiveAuthorization
@@ -30,5 +31,5 @@ __all__ = [
     "AuthorizationValidator", "LivePreflight", "PreflightContext", "PreflightResult",
     "ProductionReadinessGate", "ProductionReadinessReport", "ReadinessEvidence", "ReadinessGate",
     "LiveAuthorization", "TwoPersonLiveAuthorization", "LimitedLiveController", "LimitedLiveLimits",
-    "LimitedLiveState",
+    "LimitedLiveState", "FullLiveController", "FullLiveEvidence", "FullLiveGate", "FullLiveGateReport",
 ]

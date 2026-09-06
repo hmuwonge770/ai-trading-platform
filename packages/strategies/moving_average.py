@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from decimal import Decimal
 
 from packages.strategies.config import MovingAverageCrossoverConfig
 from packages.strategies.indicators import simple_moving_average

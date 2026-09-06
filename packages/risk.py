@@ -5,8 +5,8 @@ from decimal import Decimal
 from enum import Enum
 
 from packages.portfolio import PortfolioSnapshot
-from packages.trading.paper import OrderIntent
 from packages.strategies.models import Signal
+from packages.trading.paper import OrderIntent
 
 
 class RiskReason(str, Enum):
@@ -17,7 +17,7 @@ class RiskReason(str, Enum):
     TOTAL_EXPOSURE_LIMIT = "total_exposure_limit"
     DAILY_LOSS_LIMIT = "daily_loss_limit"
     INSUFFICIENT_CASH = "insufficient_cash"
-    NEGATIVE_EQUITY = "negative_equity"
+    INSUFFICIENT_POSITION = "insufficient_position"
 
 
 @dataclass(frozen=True, slots=True)
@@ -78,7 +78,6 @@ class RiskGateway:
         order_notional = quantity * price
         position = next((p for p in context.portfolio.positions if p.symbol == order.symbol), None)
         current_quantity = position.quantity if position else Decimal("0")
-        current_symbol_notional = current_quantity * price
 
         if order.side == Signal.BUY:
             projected_quantity = current_quantity + quantity
@@ -89,13 +88,18 @@ class RiskGateway:
         else:
             return self._decision(
                 False, RiskReason.INVALID_ORDER, "risk gateway accepts only BUY or SELL orders",
-                order, order_notional, current_symbol_notional, context.total_exposure,
+                order, order_notional, Decimal("0"), context.total_exposure,
             )
 
         projected_position_notional = projected_quantity * price
-        if quantity <= 0 or price <= 0 or order.symbol.strip() == "":
+        if quantity <= 0 or price <= 0 or not order.symbol.strip():
             return self._decision(
                 False, RiskReason.INVALID_ORDER, "order quantity, price and symbol must be valid",
+                order, order_notional, projected_position_notional, projected_total_exposure,
+            )
+        if order.side == Signal.SELL and projected_quantity < 0:
+            return self._decision(
+                False, RiskReason.INSUFFICIENT_POSITION, "sell quantity exceeds the current position",
                 order, order_notional, projected_position_notional, projected_total_exposure,
             )
         if order_notional > self.limits.max_order_notional:
@@ -113,32 +117,23 @@ class RiskGateway:
                 False, RiskReason.TOTAL_EXPOSURE_LIMIT, "projected exposure exceeds the configured limit",
                 order, order_notional, projected_position_notional, projected_total_exposure,
             )
-        if context.portfolio.available_cash + context.portfolio.reserved_cash < 0:
-            return self._decision(
-                False, RiskReason.INVALID_ORDER, "portfolio cash invariant is invalid",
-                order, order_notional, projected_position_notional, projected_total_exposure,
-            )
-        if context.portfolio.available_cash < self.limits.min_cash_after_order + (order_notional if order.side == Signal.BUY else Decimal("0")):
-            return self._decision(
-                False, RiskReason.INSUFFICIENT_CASH, "order would violate the minimum remaining cash requirement",
-                order, order_notional, projected_position_notional, projected_total_exposure,
-            )
         if context.portfolio.available_cash < 0 or context.portfolio.reserved_cash < 0:
             return self._decision(
                 False, RiskReason.INSUFFICIENT_CASH, "portfolio cash balances cannot be negative",
                 order, order_notional, projected_position_notional, projected_total_exposure,
             )
-        if context.portfolio.base_currency and context.daily_realized_pnl <= -self.limits.max_daily_loss:
-            if order.side == Signal.BUY:
+        if order.side == Signal.BUY:
+            required_cash = order_notional + self.limits.min_cash_after_order
+            if context.portfolio.available_cash < required_cash:
+                return self._decision(
+                    False, RiskReason.INSUFFICIENT_CASH, "order would violate the minimum remaining cash requirement",
+                    order, order_notional, projected_position_notional, projected_total_exposure,
+                )
+            if context.daily_realized_pnl <= -self.limits.max_daily_loss:
                 return self._decision(
                     False, RiskReason.DAILY_LOSS_LIMIT, "daily loss limit blocks new risk",
                     order, order_notional, projected_position_notional, projected_total_exposure,
                 )
-        if context.portfolio.available_cash + context.portfolio.reserved_cash <= 0:
-            return self._decision(
-                False, RiskReason.NEGATIVE_EQUITY, "portfolio has no positive cash equity",
-                order, order_notional, projected_position_notional, projected_total_exposure,
-            )
 
         return self._decision(
             True, RiskReason.APPROVED, "order passed deterministic pre-trade risk checks",

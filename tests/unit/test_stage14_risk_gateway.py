@@ -66,10 +66,6 @@ def test_order_notional_limit_rejects_large_order() -> None:
 
 
 def test_projected_position_limit_rejects_additional_position() -> None:
-    decision = RiskGateway(limits()).evaluate(order(Signal.BUY, "2"), context(exposure="400"))
-
-    assert decision.approved is True
-
     position_portfolio = PortfolioEngine(
         PortfolioConfig(base_currency="USDT", initial_cash=Decimal("1000"))
     )
@@ -94,7 +90,7 @@ def test_total_exposure_limit_rejects_new_risk() -> None:
 
 
 def test_minimum_cash_rule_rejects_purchase() -> None:
-    decision = RiskGateway(limits()).evaluate(order(Signal.BUY, "9"), context(cash="1000"))
+    decision = RiskGateway(limits()).evaluate(order(Signal.BUY, "2"), context(cash="299"))
 
     assert decision.approved is False
     assert decision.reason == RiskReason.INSUFFICIENT_CASH

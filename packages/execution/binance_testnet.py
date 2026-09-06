@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from decimal import Decimal
 from typing import Any
@@ -59,7 +60,7 @@ class BinanceSpotTestnetClient:
         config: BinanceTestnetConfig,
         *,
         client: httpx.Client | None = None,
-        clock_ms: callable | None = None,
+        clock_ms: Callable[[], int] | None = None,
     ) -> None:
         self.config = config
         self._client = client or httpx.Client(
@@ -67,6 +68,7 @@ class BinanceSpotTestnetClient:
             timeout=config.timeout_seconds,
             headers={"X-MBX-APIKEY": config.api_key},
         )
+        self._client.headers["X-MBX-APIKEY"] = config.api_key
         self._owns_client = client is None
         self._clock_ms = clock_ms or (lambda: int(time.time() * 1000))
 

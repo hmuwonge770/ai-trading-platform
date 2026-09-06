@@ -100,6 +100,7 @@ class PaperTradingEngine:
         self.quantity = Decimal("0")
         self.realized_pnl = Decimal("0")
         self.total_fees = Decimal("0")
+        self._entry_price = Decimal("0")
         self._candles: list[MarketBar] = []
         self._pending_signal: TradingSignal | None = None
         self._strategy_version_id: str | None = None
@@ -135,9 +136,11 @@ class PaperTradingEngine:
 
         self._candles = list(historical_candles[-self.config.warmup_candles :])
         self._strategy_version_id = strategy_version_id
+        warmup_signals = strategy.generate_signals(self._candles)
+        if len(warmup_signals) != len(self._candles):
+            raise ValueError("strategy must return exactly one signal per candle")
         # Warm-up is deliberately non-trading: generated historical signals
         # are discarded so paper mode starts with a flat position.
-        strategy.generate_signals(self._candles)
         self._pending_signal = None
         self._last_candle_time = self._candles[-1].open_time
         self._started = True
@@ -216,6 +219,7 @@ class PaperTradingEngine:
         if signal.side == Signal.BUY:
             self.cash -= quantity * execution_price + fee
             self.quantity += quantity
+            self._entry_price = execution_price
         else:
             proceeds = quantity * execution_price - fee
             entry_value = quantity * self._entry_price
@@ -224,8 +228,6 @@ class PaperTradingEngine:
             self.quantity = Decimal("0")
             self._entry_price = Decimal("0")
 
-        if signal.side == Signal.BUY:
-            self._entry_price = execution_price
         self.total_fees += fee
 
         fill = PaperFill(
@@ -239,14 +241,6 @@ class PaperTradingEngine:
             executed_at=candle.open_time,
         )
         return intent, fill
-
-    @property
-    def _entry_price(self) -> Decimal:
-        return getattr(self, "__entry_price", Decimal("0"))
-
-    @_entry_price.setter
-    def _entry_price(self, value: Decimal) -> None:
-        self.__entry_price = value
 
     def _validate_history(self, candles: list[MarketBar]) -> None:
         if not candles:

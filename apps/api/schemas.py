@@ -5,7 +5,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from packages.database.models import ExperimentStatus, ResearchSessionStatus
 from packages.experiments.models import DatasetSplitConfig
@@ -48,6 +48,14 @@ class ExperimentCreate(BaseModel):
     hypothesis: str | None = None
     generation: int = Field(default=0, ge=0)
     parent_experiment_id: uuid.UUID | None = None
+
+    @model_validator(mode="after")
+    def validate_window(self) -> ExperimentCreate:
+        if self.start_time.tzinfo is None or self.end_time.tzinfo is None:
+            raise ValueError("start_time and end_time must be timezone-aware")
+        if self.start_time >= self.end_time:
+            raise ValueError("start_time must be before end_time")
+        return self
 
 
 class ExperimentResponse(BaseModel):

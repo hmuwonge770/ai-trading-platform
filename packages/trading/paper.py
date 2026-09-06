@@ -247,7 +247,7 @@ class PaperTradingEngine:
             raise ValueError("historical_candles must not be empty")
         for candle in candles:
             self._validate_market_bar(candle)
-        for previous, current in zip(candles, candles[1:]):
+        for previous, current in zip(candles, candles[1:], strict=True):
             if current.open_time <= previous.open_time:
                 raise ValueError("historical candles must be strictly ordered by open_time")
 

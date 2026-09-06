@@ -114,7 +114,7 @@ def test_open_position_is_marked_to_market_without_fake_exit() -> None:
 
     assert len(result.trades) == 0
     # BUY from candle 1 executes at candle 2 open (120), so the final close is 125.
-    assert abs(result.final_equity - Decimal("1041.666666666666666666666666")) < Decimal("1e-24")
+    assert abs(result.final_equity - Decimal("1041.666666666666666666666667")) < Decimal("1e-24")
 
 
 def test_drawdown_and_win_rate_are_reported() -> None:

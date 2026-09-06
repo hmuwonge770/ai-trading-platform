@@ -42,11 +42,11 @@ def test_moving_average_crossover_emits_buy() -> None:
         Signal.HOLD,
         Signal.HOLD,
         Signal.HOLD,
-        Signal.BUY,
         Signal.HOLD,
+        Signal.BUY,
     ]
-    assert signals[3].price == Decimal("3")
-    assert signals[3].reason == "short_sma_crossed_above_long_sma"
+    assert signals[4].price == Decimal("5")
+    assert signals[4].reason == "short_sma_crossed_above_long_sma"
 
 
 def test_moving_average_crossover_emits_sell() -> None:
@@ -58,10 +58,10 @@ def test_moving_average_crossover_emits_sell() -> None:
         Signal.HOLD,
         Signal.HOLD,
         Signal.HOLD,
-        Signal.SELL,
         Signal.HOLD,
+        Signal.SELL,
     ]
-    assert signals[3].reason == "short_sma_crossed_below_long_sma"
+    assert signals[4].reason == "short_sma_crossed_below_long_sma"
 
 
 def test_strategy_is_deterministic() -> None:

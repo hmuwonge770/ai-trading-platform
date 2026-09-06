@@ -38,7 +38,11 @@ def test_model_defaults_and_constraints_are_declared():
         for c in MarketCandle.__table__.constraints
     )
     assert Job.__table__.c.attempts.default.arg == 0
-    assert Experiment.__table__.c.parameters.default.arg == {}
+
+    parameters_default = Experiment.__table__.c.parameters.default.arg
+    assert callable(parameters_default)
+    assert parameters_default() == {}
+    assert parameters_default() is not parameters_default()
 
 
 def test_job_message_is_json_and_has_stable_identifiers():

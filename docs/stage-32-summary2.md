@@ -1,0 +1,1 @@
+Stage 32 adds deterministic live-canary safety gating and binds the canary lifecycle to the approved authorization hash.

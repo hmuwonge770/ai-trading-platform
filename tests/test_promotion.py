@@ -34,12 +34,9 @@ def allocation(stage=PromotionStage.LIVE_CANARY):
 def approved_promotion():
     service = PromotionService()
     p = service.request(
-        strategy_version=version(),
-        from_stage=PromotionStage.TESTNET,
-        to_stage=PromotionStage.LIVE_CANARY,
-        requested_by="operator",
-        capital_allocation=allocation(),
-        evidence={"testnet": "passed"},
+        strategy_version=version(), from_stage=PromotionStage.TESTNET,
+        to_stage=PromotionStage.LIVE_CANARY, requested_by="operator",
+        capital_allocation=allocation(), evidence={"testnet": "passed"},
     )
     service.approve(p, approver_id="risk-1", role=ApprovalRole.RISK_MANAGER, capital_limit=Decimal("1000"), evidence={"review": 1})
     service.approve(p, approver_id="admin-1", role=ApprovalRole.ADMIN, capital_limit=Decimal("1000"), evidence={"review": 2})
@@ -76,16 +73,18 @@ def test_duplicate_approver_is_rejected():
         service.approve(p, approver_id="risk-1", role=ApprovalRole.RISK_MANAGER, capital_limit=Decimal("1000"), evidence={})
 
 
-def test_fingerprint_is_bound_to_approval():
+def test_mismatched_approval_fingerprint_is_rejected():
     service = PromotionService()
     p = service.request(
         strategy_version=version(), from_stage=PromotionStage.TESTNET,
         to_stage=PromotionStage.LIVE_CANARY, requested_by="operator",
         capital_allocation=allocation(), evidence={},
     )
-    p.strategy_version = StrategyVersion(p.strategy_version.strategy_version_id, p.strategy_version.strategy_id, "b" * 64, {})
+    # Simulate an approval generated against a different strategy version.
+    from packages.promotion.domain import Approval, ApprovalDecision
+    bad = Approval("risk-1", ApprovalRole.RISK_MANAGER, ApprovalDecision.APPROVE, "b" * 64, Decimal("1000"), "e" * 64)
     with pytest.raises(ValueError):
-        service.approve(p, approver_id="risk-1", role=ApprovalRole.RISK_MANAGER, capital_limit=Decimal("1000"), evidence={})
+        p.add_approval(bad)
 
 
 def test_authorization_has_expiration_and_hash():

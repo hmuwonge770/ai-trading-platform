@@ -113,27 +113,27 @@ def test_open_position_is_marked_to_market_without_fake_exit() -> None:
     )
 
     assert len(result.trades) == 0
-    # BUY from candle 1 executes at candle 2 open (120), so the final close is also 125.
+    # BUY from candle 1 executes at candle 2 open (120), so the final close is 125.
     assert result.final_equity == Decimal("1041.666666666666666666666666")
 
 
 def test_drawdown_and_win_rate_are_reported() -> None:
     candles = bars(
-        ["100", "100", "120", "90", "110", "100"],
-        ["100", "100", "120", "90", "110", "100"],
+        ["100", "100", "120", "90", "110", "130", "100"],
+        ["100", "100", "120", "90", "110", "130", "100"],
     )
     result = BacktestEngine().run(
         candles,
         FixedSignalsStrategy(
-            [Signal.BUY, Signal.HOLD, Signal.SELL, Signal.BUY, Signal.SELL, Signal.HOLD]
+            [Signal.BUY, Signal.HOLD, Signal.SELL, Signal.BUY, Signal.SELL, Signal.HOLD, Signal.HOLD]
         ),
         initial_capital=Decimal("1000"),
     )
 
     assert result.max_drawdown > 0
     assert result.winning_trades == 1
-    assert result.losing_trades == 0
-    assert result.win_rate == Decimal("1")
+    assert result.losing_trades == 1
+    assert result.win_rate == Decimal("0.5")
 
 
 def test_backtest_rejects_invalid_inputs_and_unsorted_candles() -> None:

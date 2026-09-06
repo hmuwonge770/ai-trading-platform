@@ -41,8 +41,13 @@ def test_model_defaults_and_constraints_are_declared():
 
     parameters_default = Experiment.__table__.c.parameters.default.arg
     assert callable(parameters_default)
-    assert parameters_default() == {}
-    assert parameters_default() is not parameters_default()
+
+    first_default = parameters_default(None)
+    second_default = parameters_default(None)
+
+    assert first_default == {}
+    assert second_default == {}
+    assert first_default is not second_default
 
 
 def test_job_message_is_json_and_has_stable_identifiers():

@@ -17,4 +17,4 @@ jobs:
       - name: Lint
         run: ruff check .
       - name: Test
-        run: python -m pytest
+        run: python -m pytest -vv --timeout=60 --timeout-method=thread --durations=20

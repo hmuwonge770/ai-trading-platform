@@ -4,7 +4,6 @@ import hashlib
 import json
 import uuid
 from collections.abc import Sequence
-from datetime import datetime
 from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -25,7 +24,6 @@ def dataset_fingerprint(candles: Sequence[MarketBar]) -> str:
     """Return a stable content hash for the exact ordered research dataset."""
     if not candles:
         raise LineageValidationError("cannot fingerprint an empty dataset")
-
     payload = [
         {
             "symbol": candle.symbol,
@@ -78,12 +76,10 @@ def validate_parent_lineage(
         raise LineageValidationError("generation cannot be negative")
     if experiment_id is not None and parent_experiment_id == experiment_id:
         raise LineageValidationError("an experiment cannot be its own parent")
-
     if parent_experiment_id is None:
         if generation != 0:
             raise LineageValidationError("root experiments must have generation 0")
         return
-
     if parent_session_id is None or parent_generation is None:
         raise LineageValidationError("parent experiment must exist before creating a child")
     if parent_session_id != session_id:
@@ -93,28 +89,23 @@ def validate_parent_lineage(
 
 
 def validate_partition_isolation(
-    train: Sequence[MarketBar],
-    validation: Sequence[MarketBar],
-    test: Sequence[MarketBar],
+    train: Sequence[MarketBar], validation: Sequence[MarketBar], test: Sequence[MarketBar]
 ) -> None:
     """Verify chronological, non-overlapping partitions before any backtest."""
     partitions = (("train", train), ("validation", validation), ("test", test))
     if any(not candles for _, candles in partitions):
         raise LineageValidationError("train, validation, and test partitions must be non-empty")
-
-    all_candles = [candle for _, candles in partitions for candle in candles]
     identities = [
         (candle.symbol, candle.timeframe, candle.open_time)
-        for candle in all_candles
+        for _, candles in partitions
+        for candle in candles
     ]
     if len(identities) != len(set(identities)):
         raise LineageValidationError("dataset partitions overlap")
-
     for name, candles in partitions:
         for index in range(1, len(candles)):
             if candles[index].open_time <= candles[index - 1].open_time:
                 raise LineageValidationError(f"{name} partition must be strictly chronological")
-
     if train[-1].open_time >= validation[0].open_time:
         raise LineageValidationError("training data overlaps or follows validation data")
     if validation[-1].open_time >= test[0].open_time:
@@ -137,7 +128,6 @@ class AntiOverfittingPolicy(BaseModel):
     """Explicit research-budget limits that prevent unbounded tuning loops."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
-
     max_experiments_per_session: int = Field(default=100, ge=1)
     max_generation: int = Field(default=10, ge=0)
 

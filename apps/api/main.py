@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from apps.api.routes import router as research_router
 from packages.trading.config import get_settings
 
 settings = get_settings()
@@ -9,6 +10,8 @@ app = FastAPI(
     version="0.1.0",
     description="Control and research API for the research-first trading platform.",
 )
+
+app.include_router(research_router)
 
 
 @app.get("/health", tags=["system"])

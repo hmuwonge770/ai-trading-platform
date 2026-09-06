@@ -15,6 +15,7 @@ from .domain import (
 )
 from .execution_store import PromotionAuthorizationStore
 from .invalidation import AuthorizationBinding, AuthorizationValidator
+from .limited_live import LimitedLiveController, LimitedLiveLimits, LimitedLiveState
 from .live_authorization import LiveAuthorization, TwoPersonLiveAuthorization
 from .preflight import LivePreflight, PreflightContext, PreflightResult
 from .readiness import ProductionReadinessGate, ProductionReadinessReport, ReadinessEvidence, ReadinessGate
@@ -28,5 +29,6 @@ __all__ = [
     "CanaryController", "CanaryGateReport", "CanaryLimits", "CanaryState", "AuthorizationBinding",
     "AuthorizationValidator", "LivePreflight", "PreflightContext", "PreflightResult",
     "ProductionReadinessGate", "ProductionReadinessReport", "ReadinessEvidence", "ReadinessGate",
-    "LiveAuthorization", "TwoPersonLiveAuthorization",
+    "LiveAuthorization", "TwoPersonLiveAuthorization", "LimitedLiveController", "LimitedLiveLimits",
+    "LimitedLiveState",
 ]

@@ -4,7 +4,7 @@ import pytest
 
 from packages.accounting import AccountingEntry, AccountingTransaction, Ledger
 from packages.reliability import FailurePlan, InjectedFailure
-from packages.security import CredentialRedactor, SecurityPolicy
+from packages.security import CredentialRedactor, SecurityEnvironment, SecurityPolicy
 from packages.trading.environment import EnvironmentGuard, TradingEnvironment
 
 

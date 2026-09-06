@@ -58,10 +58,8 @@ class PromotionRepository:
                           max_orders_per_day = EXCLUDED.max_orders_per_day,
                           enabled = EXCLUDED.enabled
         """), {
-            "id": str(uuid4()),
-            "strategy_version_id": str(promotion.strategy_version.strategy_version_id),
-            "environment": promotion.to_stage.value,
-            "max_capital": promotion.capital_allocation.max_capital,
+            "id": str(uuid4()), "strategy_version_id": str(promotion.strategy_version.strategy_version_id),
+            "environment": promotion.to_stage.value, "max_capital": promotion.capital_allocation.max_capital,
             "max_position_value": promotion.capital_allocation.max_position_value,
             "max_daily_loss": promotion.capital_allocation.max_daily_loss,
             "max_orders_per_day": promotion.capital_allocation.max_orders_per_day,
@@ -76,9 +74,8 @@ class PromotionRepository:
     def get_for_update(self, promotion_id: UUID) -> Promotion | None:
         return self._find(promotion_id, lock=True)
 
-    def add_approval(self, promotion_id: UUID, *, approver_id: str,
-                     role: ApprovalRole, capital_limit: Decimal,
-                     evidence_hash: str, fingerprint: str) -> Promotion:
+    def add_approval(self, promotion_id: UUID, *, approver_id: str, role: ApprovalRole,
+                     capital_limit: Decimal, evidence_hash: str, fingerprint: str) -> Promotion:
         """Atomically lock, validate and persist one approval."""
         promotion = self.get_for_update(promotion_id)
         if promotion is None:
@@ -97,10 +94,9 @@ class PromotionRepository:
             VALUES (:id, :promotion_id, :approver_id, :role, :decision, :fingerprint,
                     :capital_limit, :evidence_hash)
         """), {
-            "id": str(uuid4()), "promotion_id": str(promotion_id),
-            "approver_id": approver_id, "role": role.value,
-            "decision": ApprovalDecision.APPROVE.value, "fingerprint": fingerprint,
-            "capital_limit": capital_limit, "evidence_hash": evidence_hash,
+            "id": str(uuid4()), "promotion_id": str(promotion_id), "approver_id": approver_id,
+            "role": role.value, "decision": ApprovalDecision.APPROVE.value,
+            "fingerprint": fingerprint, "capital_limit": capital_limit, "evidence_hash": evidence_hash,
         })
         self.db.execute(text("UPDATE strategy_promotions SET status = :status WHERE id = :id"),
                         {"status": promotion.status.value, "id": str(promotion_id)})
@@ -168,22 +164,18 @@ class PromotionRepository:
 
     def _find(self, promotion_id: UUID, *, lock: bool) -> Promotion | None:
         suffix = " FOR UPDATE" if lock else ""
-        row = self.db.execute(
-            text(f"SELECT * FROM strategy_promotions WHERE id = :id{suffix}"),
-            {"id": str(promotion_id)},
-        ).mappings().first()
+        row = self.db.execute(text(f"SELECT * FROM strategy_promotions WHERE id = :id{suffix}"),
+                              {"id": str(promotion_id)}).mappings().first()
         return None if row is None else self._load_promotion(row)
 
     @staticmethod
     def _promotion_params(promotion: Promotion) -> dict[str, Any]:
         allocation = promotion.capital_allocation
         return {
-            "id": str(promotion.promotion_id),
-            "strategy_version_id": str(promotion.strategy_version.strategy_version_id),
+            "id": str(promotion.promotion_id), "strategy_version_id": str(promotion.strategy_version.strategy_version_id),
             "from_stage": promotion.from_stage.value, "to_stage": promotion.to_stage.value,
             "requested_by": promotion.requested_by, "status": promotion.status.value,
-            "required_approvals": promotion.required_approvals,
-            "evidence_snapshot_hash": promotion.evidence_snapshot_hash,
+            "required_approvals": promotion.required_approvals, "evidence_snapshot_hash": promotion.evidence_snapshot_hash,
             "max_capital": allocation.max_capital, "max_position_value": allocation.max_position_value,
             "max_daily_loss": allocation.max_daily_loss, "max_orders_per_day": allocation.max_orders_per_day,
             "allocation_enabled": allocation.enabled,
@@ -197,15 +189,12 @@ class PromotionRepository:
     def _load_promotion(self, row: Any) -> Promotion:
         version_row = self.db.execute(
             text("SELECT id, strategy_id, fingerprint, config FROM strategy_versions WHERE id = :id"),
-            {"id": str(row["strategy_version_id"])},
-        ).mappings().first()
+            {"id": str(row["strategy_version_id"])}).mappings().first()
         if version_row is None:
             raise LookupError("strategy version not found")
         allocation = CapitalAllocation(
-            environment=PromotionStage(row["to_stage"]),
-            max_capital=Decimal(str(row["max_capital"])),
-            max_position_value=Decimal(str(row["max_position_value"])),
-            max_daily_loss=Decimal(str(row["max_daily_loss"])),
+            environment=PromotionStage(row["to_stage"]), max_capital=Decimal(str(row["max_capital"])),
+            max_position_value=Decimal(str(row["max_position_value"])), max_daily_loss=Decimal(str(row["max_daily_loss"])),
             max_orders_per_day=int(row["max_orders_per_day"]), enabled=bool(row["allocation_enabled"]),
         )
         approvals = self.db.execute(text("""
@@ -213,8 +202,7 @@ class PromotionRepository:
             FROM promotion_approvals WHERE promotion_id = :promotion_id ORDER BY created_at
         """), {"promotion_id": str(row["id"])}).mappings().all()
         strategy_version = StrategyVersion(
-            strategy_version_id=UUID(str(version_row["id"])),
-            strategy_id=UUID(str(version_row["strategy_id"])),
+            strategy_version_id=UUID(str(version_row["id"])), strategy_id=UUID(str(version_row["strategy_id"])),
             fingerprint=str(version_row["fingerprint"]), configuration=dict(version_row["config"] or {}),
         )
         return Promotion(
@@ -222,7 +210,6 @@ class PromotionRepository:
             to_stage=PromotionStage(row["to_stage"]), requested_by=row["requested_by"],
             capital_allocation=allocation, required_approvals=int(row["required_approvals"]),
             promotion_id=UUID(str(row["id"])), status=PromotionStatus(row["status"]),
-            approvals=[self._approval(item) for item in approvals],
-            evidence_snapshot_hash=row["evidence_snapshot_hash"], created_at=row["created_at"],
-            activated_at=row["activated_at"], halted_at=row["halted_at"],
+            approvals=[self._approval(item) for item in approvals], evidence_snapshot_hash=row["evidence_snapshot_hash"],
+            created_at=row["created_at"], activated_at=row["activated_at"], halted_at=row["halted_at"],
         )

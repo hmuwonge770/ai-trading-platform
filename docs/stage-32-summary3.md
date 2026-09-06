@@ -1,0 +1,1 @@
+Stage 32 is intentionally fail-closed. A canary cannot activate or scale when any reconciliation, unknown-order, balance/position, risk, execution, account-health, market-freshness, circuit-breaker, or kill-switch condition is unsafe.

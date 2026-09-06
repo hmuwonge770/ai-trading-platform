@@ -1,6 +1,7 @@
 """Strategy promotion and live authorization domain."""
 
 from .canary import CanaryController, CanaryLimits, CanaryState
+from .canary_gate import CanaryGateReport
 from .domain import (
     ApprovalDecision,
     ApprovalRole,
@@ -24,8 +25,8 @@ __all__ = [
     "ApprovalDecision", "ApprovalRole", "AuthorizationRecord", "AuthorizationSnapshot",
     "CapitalAllocation", "Promotion", "PromotionAuthorizationStore", "PromotionRepository",
     "PromotionService", "PromotionStage", "PromotionStatus", "StrategyVersion",
-    "CanaryController", "CanaryLimits", "CanaryState", "AuthorizationBinding", "AuthorizationValidator",
-    "LivePreflight", "PreflightContext", "PreflightResult", "ProductionReadinessGate",
-    "ProductionReadinessReport", "ReadinessEvidence", "ReadinessGate", "LiveAuthorization",
-    "TwoPersonLiveAuthorization",
+    "CanaryController", "CanaryGateReport", "CanaryLimits", "CanaryState", "AuthorizationBinding",
+    "AuthorizationValidator", "LivePreflight", "PreflightContext", "PreflightResult",
+    "ProductionReadinessGate", "ProductionReadinessReport", "ReadinessEvidence", "ReadinessGate",
+    "LiveAuthorization", "TwoPersonLiveAuthorization",
 ]

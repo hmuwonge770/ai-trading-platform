@@ -5,6 +5,7 @@ from sqlalchemy import engine_from_config, pool
 
 from packages.database.base import Base
 from packages.database import models  # noqa: F401
+from packages.accounting import models as accounting_models  # noqa: F401
 from packages.trading.config import get_settings
 
 config = context.config

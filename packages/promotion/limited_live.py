@@ -39,6 +39,7 @@ class LimitedLiveController:
     limits: LimitedLiveLimits | None = None
     authorization_hash: str | None = None
     last_gate: CanaryGateReport | None = None
+    approved_limits: LimitedLiveLimits | None = None
 
     def arm(self, promotion: Promotion, limits: LimitedLiveLimits, *, authorization_hash: str) -> None:
         if promotion.status != PromotionStatus.APPROVED:
@@ -58,6 +59,12 @@ class LimitedLiveController:
         if limits.max_orders_per_day > allocation.max_orders_per_day:
             raise ValueError("Limited-live order limit exceeds approved allocation")
         self.limits = limits
+        self.approved_limits = LimitedLiveLimits(
+            max_capital=allocation.max_capital,
+            max_position_value=allocation.max_position_value,
+            max_daily_loss=allocation.max_daily_loss,
+            max_orders_per_day=allocation.max_orders_per_day,
+        )
         self.authorization_hash = authorization_hash
         self.last_gate = None
         self.state = LimitedLiveState.ARMED
@@ -84,6 +91,7 @@ class LimitedLiveController:
         self.limits = None
         self.authorization_hash = None
         self.last_gate = None
+        self.approved_limits = None
 
     def scale(
         self,
@@ -98,6 +106,8 @@ class LimitedLiveController:
             raise PermissionError("Scaling gate has not passed: " + "; ".join(gate.failures()))
         if self.limits is None or self.authorization_hash is None:
             raise ValueError("Limited-live authorization is missing")
+        if self.approved_limits is None:
+            raise ValueError("Approved allocation is missing")
         if len(new_authorization_hash) != 64:
             raise ValueError("New authorization hash must be a SHA-256 hex digest")
         if new_authorization_hash == self.authorization_hash:
@@ -105,8 +115,15 @@ class LimitedLiveController:
         new_limits.validate()
         if new_limits.max_capital < self.limits.max_capital:
             raise ValueError("Use a reduction operation for decreasing capital")
-        allocation = new_limits
-        if allocation.max_capital > self.limits.max_capital and self.last_gate is None:
+        if new_limits.max_capital > self.approved_limits.max_capital:
+            raise ValueError("Limited-live capital exceeds approved allocation")
+        if new_limits.max_position_value > self.approved_limits.max_position_value:
+            raise ValueError("Limited-live position limit exceeds approved allocation")
+        if new_limits.max_daily_loss > self.approved_limits.max_daily_loss:
+            raise ValueError("Limited-live loss limit exceeds approved allocation")
+        if new_limits.max_orders_per_day > self.approved_limits.max_orders_per_day:
+            raise ValueError("Limited-live order limit exceeds approved allocation")
+        if new_limits.max_capital > self.limits.max_capital and self.last_gate is None:
             raise ValueError("Scaling requires a prior clean gate")
         self.limits = new_limits
         self.authorization_hash = new_authorization_hash

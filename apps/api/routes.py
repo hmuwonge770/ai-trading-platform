@@ -32,21 +32,14 @@ def create_research_session(
     request: ResearchSessionCreate,
     db: Session = Depends(get_db),
 ) -> ResearchSession:
-    session = ResearchSession(
-        name=request.name,
-        objective=request.objective,
-        config=request.config,
-    )
+    session = ResearchSession(name=request.name, objective=request.objective, config=request.config)
     db.add(session)
     db.commit()
     db.refresh(session)
     return session
 
 
-@router.get(
-    "/research-sessions/{session_id}",
-    response_model=ResearchSessionResponse,
-)
+@router.get("/research-sessions/{session_id}", response_model=ResearchSessionResponse)
 def get_research_session(
     session_id: uuid.UUID,
     db: Session = Depends(get_db),
@@ -90,6 +83,13 @@ def create_experiment(
 ) -> Experiment:
     if db.get(ResearchSession, session_id) is None:
         raise HTTPException(status_code=404, detail="research session not found")
+
+    if request.parent_experiment_id is not None:
+        parent = db.get(Experiment, request.parent_experiment_id)
+        if parent is None:
+            raise HTTPException(status_code=422, detail="parent experiment not found")
+        if parent.session_id != session_id:
+            raise HTTPException(status_code=422, detail="parent experiment belongs to another session")
 
     try:
         config = ExperimentConfig(

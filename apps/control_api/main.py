@@ -50,7 +50,7 @@ def health() -> dict[str, str]:
 
 
 @app.post("/promotions")
-def create_promotion(request: PromotionRequest, db: Session = Depends(get_db)):
+def create_promotion(request: PromotionRequest, db: Session = Depends(get_db)):  # noqa: B008
     try:
         promotion = service.request(
             strategy_version=StrategyVersion(
@@ -81,7 +81,7 @@ def create_promotion(request: PromotionRequest, db: Session = Depends(get_db)):
 
 
 @app.get("/promotions/{promotion_id}")
-def get_promotion(promotion_id: UUID, db: Session = Depends(get_db)):
+def get_promotion(promotion_id: UUID, db: Session = Depends(get_db)):  # noqa: B008
     promotion = PromotionRepository(db).get(promotion_id)
     if promotion is None:
         raise HTTPException(status_code=404, detail="Promotion not found")
@@ -99,7 +99,7 @@ def get_promotion(promotion_id: UUID, db: Session = Depends(get_db)):
 
 
 @app.post("/promotions/{promotion_id}/approve")
-def approve_promotion(promotion_id: UUID, request: ApprovalRequest, db: Session = Depends(get_db)):
+def approve_promotion(promotion_id: UUID, request: ApprovalRequest, db: Session = Depends(get_db)):  # noqa: B008
     repo = PromotionRepository(db)
     promotion = repo.get(promotion_id)
     if promotion is None:
@@ -123,7 +123,7 @@ def approve_promotion(promotion_id: UUID, request: ApprovalRequest, db: Session 
 
 
 @app.post("/promotions/{promotion_id}/activate")
-def activate_promotion(promotion_id: UUID, db: Session = Depends(get_db)):
+def activate_promotion(promotion_id: UUID, db: Session = Depends(get_db)):  # noqa: B008
     try:
         promotion = PromotionRepository(db).activate(promotion_id)
     except LookupError as exc:
@@ -136,7 +136,7 @@ def activate_promotion(promotion_id: UUID, db: Session = Depends(get_db)):
 
 
 @app.post("/promotions/{promotion_id}/authorization")
-def create_authorization(promotion_id: UUID, request: AuthorizationRequest, db: Session = Depends(get_db)):
+def create_authorization(promotion_id: UUID, request: AuthorizationRequest, db: Session = Depends(get_db)):  # noqa: B008
     repo = PromotionRepository(db)
     promotion = repo.get(promotion_id)
     if promotion is None:
@@ -160,7 +160,7 @@ def create_authorization(promotion_id: UUID, request: AuthorizationRequest, db: 
 
 
 @app.post("/promotions/{promotion_id}/halt")
-def halt_promotion(promotion_id: UUID, db: Session = Depends(get_db)):
+def halt_promotion(promotion_id: UUID, db: Session = Depends(get_db)):  # noqa: B008
     try:
         promotion = PromotionRepository(db).halt(promotion_id)
     except LookupError as exc:

@@ -10,9 +10,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from packages.database.session import get_db
-from packages.promotion.domain import ApprovalRole, CapitalAllocation, PromotionStage, StrategyVersion
+from packages.promotion.domain import ApprovalRole, CapitalAllocation, PromotionStage, StrategyVersion, sha256_hex
 from packages.promotion.repository import PromotionRepository
-from packages.promotion.service import PromotionService, sha256_hex
+from packages.promotion.service import PromotionService
 
 app = FastAPI(title="AI Trading Control API", version="0.2.0")
 service = PromotionService()

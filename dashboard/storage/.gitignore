@@ -1,0 +1,13 @@
+*
+!.gitignore
+!framework/
+!framework/cache/
+!framework/cache/.gitkeep
+!framework/sessions/
+!framework/sessions/.gitkeep
+!framework/testing/
+!framework/testing/.gitkeep
+!framework/views/
+!framework/views/.gitkeep
+!logs/
+!logs/.gitkeep

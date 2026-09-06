@@ -63,6 +63,8 @@ def test_arm_requires_approved_limited_live_promotion():
     controller.arm(promotion, limits(), authorization_hash=AUTH_HASH)
     assert controller.state == LimitedLiveState.ARMED
     assert controller.authorization_hash == AUTH_HASH
+    assert controller.approved_limits is not None
+    assert controller.approved_limits.max_capital == Decimal("1000")
 
 
 def test_start_requires_clean_gate():
@@ -110,6 +112,32 @@ def test_scale_requires_fresh_clean_gate_and_new_authorization():
     assert controller.authorization_hash == NEW_AUTH_HASH
 
 
+def test_scale_never_exceeds_approved_position_loss_or_order_limits():
+    controller = LimitedLiveController()
+    promotion = make_promotion()
+    controller.arm(promotion, limits(), authorization_hash=AUTH_HASH)
+    controller.start(promotion, gate=CanaryGateReport())
+
+    with pytest.raises(ValueError):
+        controller.scale(
+            new_limits=LimitedLiveLimits(Decimal("300"), Decimal("501"), Decimal("25"), 5),
+            gate=CanaryGateReport(),
+            new_authorization_hash=NEW_AUTH_HASH,
+        )
+    with pytest.raises(ValueError):
+        controller.scale(
+            new_limits=LimitedLiveLimits(Decimal("300"), Decimal("100"), Decimal("101"), 5),
+            gate=CanaryGateReport(),
+            new_authorization_hash=NEW_AUTH_HASH,
+        )
+    with pytest.raises(ValueError):
+        controller.scale(
+            new_limits=LimitedLiveLimits(Decimal("300"), Decimal("100"), Decimal("25"), 21),
+            gate=CanaryGateReport(),
+            new_authorization_hash=NEW_AUTH_HASH,
+        )
+
+
 def test_halt_and_disarm_clear_live_controls():
     controller = LimitedLiveController()
     promotion = make_promotion()
@@ -121,3 +149,4 @@ def test_halt_and_disarm_clear_live_controls():
     assert controller.state == LimitedLiveState.DISARMED
     assert controller.limits is None
     assert controller.authorization_hash is None
+    assert controller.approved_limits is None

@@ -58,7 +58,7 @@ def test_warmup_does_not_execute_historical_signals() -> None:
 
 
 def test_signal_executes_on_next_candle_open_with_fee_and_slippage() -> None:
-    candles = make_candles(3)
+    candles = make_candles(4)
     engine = PaperTradingEngine(
         PaperTradingConfig(
             initial_cash=Decimal("1000"),
@@ -68,15 +68,22 @@ def test_signal_executes_on_next_candle_open_with_fee_and_slippage() -> None:
             warmup_candles=2,
         )
     )
-    strategy = FixedSignalStrategy([Signal.BUY, Signal.BUY, Signal.SELL])
+    strategy = FixedSignalStrategy([Signal.HOLD, Signal.HOLD, Signal.BUY, Signal.SELL])
     engine.start(candles[:2], strategy, "strategy-v1")
 
-    result = engine.on_candle(candles[2], strategy)
+    signal_result = engine.on_candle(candles[2], strategy)
+    fill_result = engine.on_candle(candles[3], strategy)
 
-    assert result.signal.side == Signal.SELL
-    assert result.order is None
-    assert result.fill is None
-    assert engine.position_quantity == Decimal("0")
+    assert signal_result.signal.side == Signal.BUY
+    assert signal_result.fill is None
+    assert fill_result.signal.side == Signal.SELL
+    assert fill_result.order is not None
+    assert fill_result.fill is not None
+    assert fill_result.fill.side == Signal.BUY
+    assert fill_result.fill.price == Decimal("103.03")
+    assert fill_result.fill.fee == Decimal("0.20606")
+    assert engine.position_quantity == Decimal("2")
+    assert engine.cash == Decimal("793.73394")
 
 
 def test_buy_then_sell_are_executed_on_following_candles() -> None:
@@ -84,22 +91,23 @@ def test_buy_then_sell_are_executed_on_following_candles() -> None:
     engine = PaperTradingEngine(
         PaperTradingConfig(initial_cash=Decimal("1000"), order_quantity=Decimal("2"), warmup_candles=1)
     )
-    strategy = FixedSignalStrategy([Signal.BUY, Signal.SELL, Signal.HOLD, Signal.HOLD])
+    strategy = FixedSignalStrategy([Signal.HOLD, Signal.BUY, Signal.SELL, Signal.HOLD])
     engine.start(candles[:1], strategy, "strategy-v1")
 
-    buy_result = engine.on_candle(candles[1], strategy)
+    buy_signal = engine.on_candle(candles[1], strategy)
     sell_result = engine.on_candle(candles[2], strategy)
 
-    assert buy_result.fill is None
+    assert buy_signal.fill is None
     assert sell_result.fill is not None
     assert sell_result.fill.side == Signal.BUY
     assert engine.position_quantity == Decimal("2")
-    assert engine.cash == Decimal("800")
+    assert engine.cash == Decimal("796")
 
     close_result = engine.on_candle(candles[3], strategy)
     assert close_result.fill is not None
     assert close_result.fill.side == Signal.SELL
     assert engine.position_quantity == Decimal("0")
+    assert engine.cash == Decimal("1002")
 
 
 def test_strategy_must_return_one_signal_per_candle() -> None:
@@ -136,7 +144,7 @@ def test_insufficient_cash_does_not_create_a_paper_fill() -> None:
     engine = PaperTradingEngine(
         PaperTradingConfig(initial_cash=Decimal("100"), order_quantity=Decimal("2"), warmup_candles=1)
     )
-    strategy = FixedSignalStrategy([Signal.BUY, Signal.HOLD])
+    strategy = FixedSignalStrategy([Signal.HOLD, Signal.BUY])
     engine.start(candles[:1], strategy, "strategy-v1")
 
     result = engine.on_candle(candles[1], strategy)

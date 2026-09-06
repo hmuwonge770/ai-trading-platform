@@ -89,7 +89,7 @@ class Experiment(Base):
     session_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("research_sessions.id", ondelete="CASCADE"), index=True)
     strategy_version_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("strategy_versions.id", ondelete="SET NULL"))
     status: Mapped[ExperimentStatus] = mapped_column(Enum(ExperimentStatus, name="experiment_status"), default=ExperimentStatus.QUEUED)
-    parameters: Mapped[dict] = mapped_column(JSONB, default=dict)
+    parameters: Mapped[dict] = mapped_column(JSONB, default=lambda: {})
     dataset_config: Mapped[dict] = mapped_column(JSONB, default=dict)
     error: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

@@ -6,7 +6,6 @@ import pytest
 from packages.promotion import (
     ApprovalDecision,
     ApprovalRole,
-    Approval,
     CapitalAllocation,
     CanaryGateReport,
     LimitedLiveController,
@@ -16,10 +15,12 @@ from packages.promotion import (
     PromotionStage,
     StrategyVersion,
 )
+from packages.promotion.domain import Approval
 
 
 FINGERPRINT = "a" * 64
 AUTH_HASH = "b" * 64
+NEW_AUTH_HASH = "d" * 64
 EVIDENCE = "c" * 64
 
 
@@ -84,18 +85,29 @@ def test_start_activates_only_with_clean_gate():
     assert controller.last_gate == gate
 
 
-def test_scale_requires_fresh_clean_gate_and_never_increases_approved_allocation():
+def test_scale_requires_fresh_clean_gate_and_new_authorization():
     controller = LimitedLiveController()
     promotion = make_promotion()
     controller.arm(promotion, limits(), authorization_hash=AUTH_HASH)
     controller.start(promotion, gate=CanaryGateReport())
     with pytest.raises(PermissionError):
-        controller.scale(new_limits=limits("300"), gate=CanaryGateReport(critical_execution_errors=1))
+        controller.scale(
+            new_limits=limits("300"),
+            gate=CanaryGateReport(critical_execution_errors=1),
+            new_authorization_hash=NEW_AUTH_HASH,
+        )
     with pytest.raises(ValueError):
-        controller.scale(new_limits=LimitedLiveLimits(Decimal("1500"), Decimal("100"), Decimal("25"), 5), gate=CanaryGateReport())
-    controller.scale(new_limits=limits("300"), gate=CanaryGateReport())
+        controller.scale(
+            new_limits=LimitedLiveLimits(Decimal("1500"), Decimal("100"), Decimal("25"), 5),
+            gate=CanaryGateReport(),
+            new_authorization_hash=NEW_AUTH_HASH,
+        )
+    with pytest.raises(ValueError):
+        controller.scale(new_limits=limits("300"), gate=CanaryGateReport(), new_authorization_hash=AUTH_HASH)
+    controller.scale(new_limits=limits("300"), gate=CanaryGateReport(), new_authorization_hash=NEW_AUTH_HASH)
     assert controller.limits is not None
     assert controller.limits.max_capital == Decimal("300")
+    assert controller.authorization_hash == NEW_AUTH_HASH
 
 
 def test_halt_and_disarm_clear_live_controls():

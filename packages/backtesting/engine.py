@@ -121,6 +121,6 @@ class BacktestEngine:
             raise ValueError("fee_rate must be between zero and one")
         if slippage_rate < 0 or slippage_rate >= 1:
             raise ValueError("slippage_rate must be between zero and one")
-        for previous, current in zip(candles, candles[1:]):
+        for previous, current in zip(candles, candles[1:], strict=True):
             if current.open_time <= previous.open_time:
                 raise ValueError("candles must be strictly ordered by open_time")

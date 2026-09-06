@@ -148,7 +148,7 @@ def test_testnet_e2e_rejects_non_testnet_endpoint() -> None:
         transport=httpx.MockTransport(lambda _: httpx.Response(200, json={})),
     )
     try:
-        adapter = BinanceSpotTestnetClient(
+        BinanceSpotTestnetClient(
             BinanceTestnetConfig(
                 api_key="test-key",
                 api_secret="test-secret",

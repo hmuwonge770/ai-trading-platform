@@ -30,7 +30,7 @@ manager = ExperimentManager()
 )
 def create_research_session(
     request: ResearchSessionCreate,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db),  # noqa: B008
 ) -> ResearchSession:
     session = ResearchSession(name=request.name, objective=request.objective, config=request.config)
     db.add(session)
@@ -42,7 +42,7 @@ def create_research_session(
 @router.get("/research-sessions/{session_id}", response_model=ResearchSessionResponse)
 def get_research_session(
     session_id: uuid.UUID,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db),  # noqa: B008
 ) -> ResearchSession:
     session = db.get(ResearchSession, session_id)
     if session is None:
@@ -57,7 +57,7 @@ def get_research_session(
 def list_session_experiments(
     session_id: uuid.UUID,
     limit: int = Query(default=100, ge=1, le=500),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db),  # noqa: B008
 ) -> list[Experiment]:
     if db.get(ResearchSession, session_id) is None:
         raise HTTPException(status_code=404, detail="research session not found")
@@ -79,7 +79,7 @@ def list_session_experiments(
 def create_experiment(
     session_id: uuid.UUID,
     request: ExperimentCreate,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db),  # noqa: B008
 ) -> Experiment:
     if db.get(ResearchSession, session_id) is None:
         raise HTTPException(status_code=404, detail="research session not found")
@@ -122,7 +122,7 @@ def create_experiment(
 @router.get("/experiments/{experiment_id}", response_model=ExperimentResponse)
 def get_experiment(
     experiment_id: uuid.UUID,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db),  # noqa: B008
 ) -> Experiment:
     experiment = db.get(Experiment, experiment_id)
     if experiment is None:
@@ -138,7 +138,7 @@ def get_candles(
     symbol: str,
     timeframe: str,
     limit: int = Query(default=200, ge=1, le=1000),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db),  # noqa: B008
 ) -> list[MarketCandle]:
     normalized_symbol = symbol.strip().upper()
     normalized_timeframe = timeframe.strip().upper()

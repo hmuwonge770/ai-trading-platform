@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from decimal import Decimal
-
 import pytest
 
 from packages.researcher.client import OpenAIResearchClient, ResearchModelError

@@ -18,3 +18,21 @@ jobs:
         run: ruff check .
       - name: Test
         run: python -m pytest -vv --timeout=60 --timeout-method=thread --durations=20
+
+  dashboard:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dashboard
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, xml, ctype, fileinfo
+          coverage: none
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Test Laravel dashboard
+        run: php artisan test

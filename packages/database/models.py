@@ -91,6 +91,8 @@ class Experiment(Base):
     status: Mapped[ExperimentStatus] = mapped_column(Enum(ExperimentStatus, name="experiment_status"), default=ExperimentStatus.QUEUED)
     parameters: Mapped[dict] = mapped_column(JSONB, default=lambda: {})
     dataset_config: Mapped[dict] = mapped_column(JSONB, default=lambda: {})
+    experiment_fingerprint: Mapped[str | None] = mapped_column(String(64), unique=True)
+    engine_version: Mapped[str | None] = mapped_column(String(50))
     error: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

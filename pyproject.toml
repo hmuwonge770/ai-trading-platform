@@ -5,18 +5,41 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ai-trading-platform"
 version = "0.1.0"
+description = "Research-first AI-assisted quantitative trading platform"
 requires-python = ">=3.12"
 dependencies = [
-  "pydantic>=2.10,<3",
-  "sqlalchemy>=2.0,<3",
+    "fastapi>=0.116,<1",
+    "uvicorn[standard]>=0.35,<1",
+    "pydantic>=2.10,<3",
+    "pydantic-settings>=2.10,<3",
+    "sqlalchemy>=2.0,<3",
+    "psycopg[binary]>=3.2,<4",
+    "alembic>=1.16,<2",
+    "httpx>=0.28,<1",
+    "pandas>=2.2,<3",
+    "numpy>=2.2,<3",
+    "aio-pika>=9.5,<10",
+    "redis>=6,<8",
+    "websockets>=15,<16",
+    "openai>=1.100,<2",
+    "prometheus-client>=0.22,<1",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "pytest>=8",
-  "pytest-asyncio>=0.25",
+    "pytest>=8,<9",
+    "pytest-asyncio>=1,<2",
+    "hypothesis>=6,<7",
+    "ruff>=0.12,<1",
 ]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]

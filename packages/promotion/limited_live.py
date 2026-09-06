@@ -85,15 +85,29 @@ class LimitedLiveController:
         self.authorization_hash = None
         self.last_gate = None
 
-    def scale(self, *, new_limits: LimitedLiveLimits, gate: CanaryGateReport) -> None:
+    def scale(
+        self,
+        *,
+        new_limits: LimitedLiveLimits,
+        gate: CanaryGateReport,
+        new_authorization_hash: str,
+    ) -> None:
         if self.state != LimitedLiveState.ACTIVE:
             raise ValueError("Only active limited-live can be scaled")
         if not gate.passed:
             raise PermissionError("Scaling gate has not passed: " + "; ".join(gate.failures()))
-        if self.limits is None:
-            raise ValueError("Limited-live limits are missing")
+        if self.limits is None or self.authorization_hash is None:
+            raise ValueError("Limited-live authorization is missing")
+        if len(new_authorization_hash) != 64:
+            raise ValueError("New authorization hash must be a SHA-256 hex digest")
+        if new_authorization_hash == self.authorization_hash:
+            raise ValueError("Scaling requires a fresh authorization")
         new_limits.validate()
         if new_limits.max_capital < self.limits.max_capital:
             raise ValueError("Use a reduction operation for decreasing capital")
+        allocation = new_limits
+        if allocation.max_capital > self.limits.max_capital and self.last_gate is None:
+            raise ValueError("Scaling requires a prior clean gate")
         self.limits = new_limits
+        self.authorization_hash = new_authorization_hash
         self.last_gate = gate

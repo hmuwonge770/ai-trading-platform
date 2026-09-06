@@ -94,6 +94,25 @@ def test_authorization_has_expiration_and_hash():
     assert auth.expires_at > auth.approvals[0].created_at
 
 
+def test_authorization_cannot_bypass_fail_closed_live_environment_guard():
+    service, p = approved_promotion()
+    auth = service.authorization(p, risk_policy_fingerprint="r" * 64)
+    assert auth.environment == PromotionStage.LIVE_CANARY
+    with pytest.raises(PermissionError, match="fail-closed"):
+        EnvironmentGuard.validate(TradingEnvironment.LIVE, EnvironmentGuard.LIVE_URL)
+
+
+def test_authorization_requires_completed_approval():
+    service = PromotionService()
+    p = service.request(
+        strategy_version=version(), from_stage=PromotionStage.TESTNET,
+        to_stage=PromotionStage.LIVE_CANARY, requested_by="operator",
+        capital_allocation=allocation(), evidence={},
+    )
+    with pytest.raises(PermissionError, match="not authorized"):
+        service.authorization(p, risk_policy_fingerprint="r" * 64)
+
+
 def test_preflight_fails_closed_on_kill_switch():
     service, p = approved_promotion()
     auth = service.authorization(p, risk_policy_fingerprint="r" * 64)

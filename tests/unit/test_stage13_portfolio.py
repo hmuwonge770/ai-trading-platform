@@ -62,7 +62,7 @@ def test_buy_updates_position_weighted_average_and_cash() -> None:
     assert first.quantity == Decimal("2")
     assert second.quantity == Decimal("3")
     assert second.average_entry_price == Decimal("110")
-    assert portfolio.available_cash == Decimal("699")
+    assert portfolio.available_cash == Decimal("669")
     assert portfolio.total_fees == Decimal("1")
 
 
@@ -76,7 +76,7 @@ def test_sell_realizes_pnl_after_fee_and_keeps_remaining_cost_basis() -> None:
     assert position.average_entry_price == Decimal("100")
     assert position.realized_pnl == Decimal("18")
     assert portfolio.realized_pnl == Decimal("18")
-    assert portfolio.available_cash == Decimal("1018")
+    assert portfolio.available_cash == Decimal("818")
     assert portfolio.total_fees == Decimal("2")
 
 

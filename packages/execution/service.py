@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Protocol
 
-from packages.execution.simulator import SimulatedFill, SimulatedOrder
+from packages.execution.simulator import ExecutionStatus, SimulatedFill, SimulatedOrder
 from packages.risk import RiskDecision, RiskReason
 from packages.strategies.models import MarketBar
 from packages.trading.paper import OrderIntent
@@ -22,12 +22,7 @@ class ExecutionResult:
 
 
 class ExecutionService:
-    """Execution boundary that requires an independent risk approval.
-
-    The service owns order-submission orchestration, but the backend is
-    injected. Stage 16 therefore cannot accidentally acquire exchange access;
-    Stage 17 can supply a testnet backend behind this same boundary.
-    """
+    """Execution boundary that requires an independent risk approval."""
 
     def __init__(self, backend: ExecutionBackend) -> None:
         self.backend = backend
@@ -65,7 +60,7 @@ class ExecutionService:
 
         simulated_order, fill = self.backend.execute(order, candle)
         result = ExecutionResult(
-            accepted=simulated_order.status.value != "rejected",
+            accepted=simulated_order.status != ExecutionStatus.REJECTED,
             reason=simulated_order.reason,
             simulated_order=simulated_order,
             fill=fill,

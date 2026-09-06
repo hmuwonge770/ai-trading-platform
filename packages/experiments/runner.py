@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from packages.backtesting.engine import BacktestEngine
 from packages.database.models import Experiment
+from packages.experiments.lineage import dataset_fingerprint, split_counts, validate_partition_isolation
 from packages.experiments.manager import ExperimentManager
 from packages.experiments.models import ExperimentConfig
 from packages.strategies.models import MarketBar
@@ -13,34 +14,35 @@ from packages.strategies.registry import build_strategy
 
 
 class ExperimentRunner:
-    """Run only the training partition and persist its deterministic result.
-
-    Validation and final-test partitions are deliberately not consumed here.
-    They belong to later validation/promotion stages and must remain unseen by
-    parameter selection.
-    """
+    """Run only training data and persist evidence for all three partitions."""
 
     def __init__(self, manager: ExperimentManager | None = None) -> None:
         self.manager = manager or ExperimentManager()
         self.engine = BacktestEngine()
 
-    def run(
-        self,
-        db: Session,
-        config: ExperimentConfig,
-        candles: Sequence[MarketBar],
-    ) -> Experiment:
+    def run(self, db: Session, config: ExperimentConfig, candles: Sequence[MarketBar]) -> Experiment:
         if len(candles) < 3:
             raise ValueError("at least three candles are required for train/validation/test")
         self._validate_candle_range(config, candles)
 
-        experiment = self.manager.create(db, config)
+        dataset_fp = dataset_fingerprint(candles)
+        train, validation, test = self.split_candles(candles, config)
+        validate_partition_isolation(train, validation, test)
+
+        experiment = self.manager.create(db, config, dataset_fingerprint=dataset_fp)
+        experiment.dataset_config = {
+            **experiment.dataset_config,
+            "dataset_fingerprint": dataset_fp,
+            "partitions": {
+                "train": {"count": len(train), "start": train[0].open_time.isoformat(), "end": train[-1].open_time.isoformat()},
+                "validation": {"count": len(validation), "start": validation[0].open_time.isoformat(), "end": validation[-1].open_time.isoformat()},
+                "test": {"count": len(test), "start": test[0].open_time.isoformat(), "end": test[-1].open_time.isoformat()},
+            },
+        }
+        db.commit()
         self.manager.start(db, experiment.id)
 
         try:
-            train, _, _ = self.split_candles(candles, config)
-            if not train:
-                raise ValueError("training partition is empty")
             strategy = build_strategy(config.strategy_family, config.strategy_config)
             result = self.engine.run(
                 train,
@@ -62,12 +64,7 @@ class ExperimentRunner:
                 },
                 equity_curve={
                     "points": [
-                        {
-                            "time": point.time.isoformat(),
-                            "equity": str(point.equity),
-                            "cash": str(point.cash),
-                            "position_value": str(point.position_value),
-                        }
+                        {"time": point.time.isoformat(), "equity": str(point.equity), "cash": str(point.cash), "position_value": str(point.position_value)}
                         for point in result.equity_curve
                     ]
                 },
@@ -80,17 +77,10 @@ class ExperimentRunner:
             raise
 
     @staticmethod
-    def split_candles(
-        candles: Sequence[MarketBar], config: ExperimentConfig
-    ) -> tuple[tuple[MarketBar, ...], tuple[MarketBar, ...], tuple[MarketBar, ...]]:
-        total = len(candles)
-        if total < 3:
-            raise ValueError("at least three candles are required for train/validation/test")
-        train_count = max(1, int(total * config.dataset_split.train))
-        validation_count = max(1, int(total * config.dataset_split.validation))
-        if train_count + validation_count >= total:
-            train_count = max(1, total - 2)
-            validation_count = 1
+    def split_candles(candles: Sequence[MarketBar], config: ExperimentConfig) -> tuple[tuple[MarketBar, ...], tuple[MarketBar, ...], tuple[MarketBar, ...]]:
+        train_count, validation_count, _ = split_counts(
+            len(candles), config.dataset_split.train, config.dataset_split.validation
+        )
         return (
             tuple(candles[:train_count]),
             tuple(candles[train_count : train_count + validation_count]),
@@ -99,10 +89,7 @@ class ExperimentRunner:
 
     @staticmethod
     def _validate_candle_range(config: ExperimentConfig, candles: Sequence[MarketBar]) -> None:
-        if any(
-            candle.symbol != config.symbol or candle.timeframe != config.timeframe
-            for candle in candles
-        ):
+        if any(candle.symbol != config.symbol or candle.timeframe != config.timeframe for candle in candles):
             raise ValueError("all candles must match the experiment symbol and timeframe")
         if candles[0].open_time < config.start_time or candles[-1].open_time >= config.end_time:
             raise ValueError("candles fall outside the configured experiment window")

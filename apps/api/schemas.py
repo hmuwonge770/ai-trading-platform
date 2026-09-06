@@ -13,7 +13,6 @@ from packages.experiments.models import DatasetSplitConfig
 
 class ResearchSessionCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     name: str = Field(min_length=1, max_length=200)
     objective: str = Field(min_length=1)
     config: dict[str, Any] = Field(default_factory=dict)
@@ -21,7 +20,6 @@ class ResearchSessionCreate(BaseModel):
 
 class ResearchSessionResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-
     id: uuid.UUID
     name: str
     objective: str
@@ -33,7 +31,6 @@ class ResearchSessionResponse(BaseModel):
 
 class ExperimentCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     strategy_family: str = Field(min_length=1, max_length=100)
     strategy_config: dict[str, Any]
     symbol: str = Field(min_length=1, max_length=32)
@@ -60,14 +57,17 @@ class ExperimentCreate(BaseModel):
 
 class ExperimentResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-
     id: uuid.UUID
     session_id: uuid.UUID
     strategy_version_id: uuid.UUID | None
+    parent_experiment_id: uuid.UUID | None
+    generation: int
     status: ExperimentStatus
     parameters: dict[str, Any]
     dataset_config: dict[str, Any]
     experiment_fingerprint: str
+    dataset_fingerprint: str | None
+    lineage_fingerprint: str | None
     engine_version: str
     error: str | None
     created_at: datetime
@@ -77,7 +77,6 @@ class ExperimentResponse(BaseModel):
 
 class CandleResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-
     symbol: str
     timeframe: str
     open_time: datetime

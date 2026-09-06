@@ -5,6 +5,7 @@ from uuid import uuid4
 import pytest
 
 from packages.promotion.canary import CanaryController, CanaryLimits, CanaryState
+from packages.promotion.canary_gate import CanaryGateReport
 from packages.promotion.domain import (
     ApprovalRole,
     CapitalAllocation,
@@ -80,7 +81,6 @@ def test_mismatched_approval_fingerprint_is_rejected():
         to_stage=PromotionStage.LIVE_CANARY, requested_by="operator",
         capital_allocation=allocation(), evidence={},
     )
-    # Simulate an approval generated against a different strategy version.
     from packages.promotion.domain import Approval, ApprovalDecision
     bad = Approval("risk-1", ApprovalRole.RISK_MANAGER, ApprovalDecision.APPROVE, "b" * 64, Decimal("1000"), "e" * 64)
     with pytest.raises(ValueError):
@@ -164,15 +164,52 @@ def test_canary_cannot_exceed_approved_allocation():
     service, p = approved_promotion()
     canary = CanaryController()
     with pytest.raises(ValueError):
-        canary.arm(p, CanaryLimits(Decimal("1001"), Decimal("200"), Decimal("50"), 20))
+        canary.arm(p, CanaryLimits(Decimal("1001"), Decimal("200"), Decimal("50"), 20), authorization_hash="a" * 64)
+
+
+def test_canary_requires_clean_gate_for_activation():
+    service, p = approved_promotion()
+    canary = CanaryController()
+    canary.arm(p, CanaryLimits(Decimal("100"), Decimal("50"), Decimal("10"), 5), authorization_hash="a" * 64)
+    failed = CanaryGateReport(reconciliation_errors=1)
+    with pytest.raises(PermissionError, match="reconciliation"):
+        canary.start(p, gate=failed)
+    assert canary.state == CanaryState.ARMED
+
+
+def test_canary_activation_records_passed_gate():
+    service, p = approved_promotion()
+    canary = CanaryController()
+    canary.arm(p, CanaryLimits(Decimal("100"), Decimal("50"), Decimal("10"), 5), authorization_hash="a" * 64)
+    gate = CanaryGateReport()
+    canary.start(p, gate=gate)
+    assert canary.state == CanaryState.ACTIVE
+    assert canary.last_gate == gate
+    assert canary.authorization_hash == "a" * 64
 
 
 def test_canary_gate_required_for_scaling():
     service, p = approved_promotion()
     canary = CanaryController()
-    canary.arm(p, CanaryLimits(Decimal("100"), Decimal("50"), Decimal("10"), 5))
-    canary.start(p)
+    canary.arm(p, CanaryLimits(Decimal("100"), Decimal("50"), Decimal("10"), 5), authorization_hash="a" * 64)
+    canary.start(p, gate=CanaryGateReport())
     with pytest.raises(PermissionError):
-        canary.scale(new_limits=CanaryLimits(Decimal("200"), Decimal("100"), Decimal("20"), 10), canary_gate_passed=False)
-    canary.scale(new_limits=CanaryLimits(Decimal("200"), Decimal("100"), Decimal("20"), 10), canary_gate_passed=True)
+        canary.scale(new_limits=CanaryLimits(Decimal("200"), Decimal("100"), Decimal("20"), 10), canary_gate=CanaryGateReport(risk_violations=1))
+    canary.scale(new_limits=CanaryLimits(Decimal("200"), Decimal("100"), Decimal("20"), 10), canary_gate=CanaryGateReport())
     assert canary.state == CanaryState.ACTIVE
+
+
+def test_canary_gate_reports_all_failed_conditions():
+    report = CanaryGateReport(
+        reconciliation_errors=1,
+        unresolved_unknowns=1,
+        balance_position_mismatches=1,
+        risk_violations=1,
+        critical_execution_errors=1,
+        account_healthy=False,
+        market_data_fresh=False,
+        circuit_breaker_open=True,
+        kill_switch=True,
+    )
+    assert not report.passed
+    assert len(report.failures()) == 9

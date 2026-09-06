@@ -6,21 +6,11 @@ from typing import Callable
 from uuid import UUID
 
 from packages.execution.service import ExecutionResult, ExecutionService
-from packages.promotion import PromotionStatus
+from packages.promotion import AuthorizationRecord, PromotionStatus
 from packages.risk import RiskDecision, RiskReason
 from packages.strategies.models import MarketBar
 from packages.trading.environment import EnvironmentGuard, TradingEnvironment
 from packages.trading.paper import OrderIntent
-
-
-@dataclass(frozen=True, slots=True)
-class AuthorizationCheck:
-    authorization_hash: str
-    promotion_status: PromotionStatus
-    strategy_version_id: UUID
-    environment: TradingEnvironment
-    risk_policy_fingerprint: str
-    expires_at: datetime
 
 
 @dataclass(frozen=True, slots=True)
@@ -29,6 +19,7 @@ class ExecutionAuthorization:
 
     authorization_hash: str
     strategy_version_id: UUID
+    strategy_fingerprint: str
     environment: TradingEnvironment
     risk_policy_fingerprint: str
     expires_at: datetime
@@ -41,14 +32,14 @@ class ExecutionAuthorization:
             raise PermissionError("authorization strategy version does not match the order")
         if not self.authorization_hash or len(self.authorization_hash) != 64:
             raise ValueError("authorization hash must be a SHA-256 hex digest")
-        if len(self.risk_policy_fingerprint) != 64:
-            raise ValueError("risk policy fingerprint must be a SHA-256 hex digest")
+        if len(self.strategy_fingerprint) != 64 or len(self.risk_policy_fingerprint) != 64:
+            raise ValueError("authorization fingerprints must be SHA-256 hex digests")
 
 
 class AuthorizationStore:
-    """Read-only persistence adapter for active promotion authorizations."""
+    """Read-only adapter over the persisted promotion authorization record."""
 
-    def __init__(self, load: Callable[[str], AuthorizationCheck | None]) -> None:
+    def __init__(self, load: Callable[[str], AuthorizationRecord | None]) -> None:
         self._load = load
 
     def get_active(self, authorization_hash: str, *, now: datetime | None = None) -> ExecutionAuthorization | None:
@@ -61,21 +52,15 @@ class AuthorizationStore:
         return ExecutionAuthorization(
             authorization_hash=record.authorization_hash,
             strategy_version_id=record.strategy_version_id,
-            environment=record.environment,
+            strategy_fingerprint=record.strategy_fingerprint,
+            environment=TradingEnvironment.LIVE,
             risk_policy_fingerprint=record.risk_policy_fingerprint,
             expires_at=record.expires_at,
         )
 
 
 class PromotionExecutionGateway:
-    """Final deterministic gate joining promotion, environment, risk and execution.
-
-    A caller must present an authorization whose persisted promotion is ACTIVE
-    and unexpired. The gateway validates strategy and risk-policy fingerprints,
-    enforces the environment guard, then delegates to ExecutionService, which
-    independently requires a positive RiskDecision. No AI/research component
-    can bypass these controls or submit directly to an exchange.
-    """
+    """Final deterministic gate joining promotion, environment, risk and execution."""
 
     def __init__(self, execution: ExecutionService, authorization_store: AuthorizationStore) -> None:
         self.execution = execution
@@ -101,11 +86,7 @@ class PromotionExecutionGateway:
             authorization.validate(order, now=now)
             if authorization.risk_policy_fingerprint != risk_policy_fingerprint:
                 raise PermissionError("risk policy fingerprint does not match promotion authorization")
-            EnvironmentGuard.validate(
-                authorization.environment,
-                exchange_url,
-                live_armed=live_armed,
-            )
+            EnvironmentGuard.validate(authorization.environment, exchange_url, live_armed=live_armed)
         except (PermissionError, RuntimeError, ValueError) as exc:
             return self._rejected(order, str(exc))
 
@@ -116,9 +97,4 @@ class PromotionExecutionGateway:
 
     @staticmethod
     def _rejected(order: OrderIntent, reason: str) -> ExecutionResult:
-        return ExecutionResult(
-            accepted=False,
-            reason=reason,
-            simulated_order=None,
-            fill=None,
-        )
+        return ExecutionResult(accepted=False, reason=reason, simulated_order=None, fill=None)

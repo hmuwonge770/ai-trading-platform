@@ -7,10 +7,8 @@ services:
       POSTGRES_DB: trading_research
       POSTGRES_USER: trading
       POSTGRES_PASSWORD: trading_dev_password
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    ports: ["5433:5432"]
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U trading -d trading_research"]
       interval: 5s
@@ -21,11 +19,8 @@ services:
     image: rabbitmq:4-management-alpine
     container_name: ai-trading-rabbitmq
     restart: unless-stopped
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+    ports: ["5672:5672", "15672:15672"]
+    volumes: ["rabbitmq_data:/var/lib/rabbitmq"]
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -36,16 +31,47 @@ services:
     image: redis:8-alpine
     container_name: ai-trading-redis
     restart: unless-stopped
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
+    ports: ["6379:6379"]
+    volumes: ["redis_data:/data"]
     command: ["redis-server", "--appendonly", "yes"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 3s
       retries: 10
+
+  migrate:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://trading:trading_dev_password@postgres:5432/trading_research
+      REDIS_URL: redis://redis:6379/0
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://trading:trading_dev_password@postgres:5432/trading_research
+      REDIS_URL: redis://redis:6379/0
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      TRADING_ENVIRONMENT: paper
+      TRADING_ENABLED: "false"
+      TRADING_KILL_SWITCH: "true"
+    ports: ["8000:8000"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   postgres_data:

@@ -45,24 +45,19 @@ class JobStatus(str, enum.Enum):
 
 class ResearchSession(Base):
     __tablename__ = "research_sessions"
-
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(String(200))
     objective: Mapped[str] = mapped_column(Text)
-    status: Mapped[ResearchSessionStatus] = mapped_column(
-        Enum(ResearchSessionStatus, name="research_session_status"), default=ResearchSessionStatus.CREATED
-    )
+    status: Mapped[ResearchSessionStatus] = mapped_column(Enum(ResearchSessionStatus, name="research_session_status"), default=ResearchSessionStatus.CREATED)
     config: Mapped[dict] = mapped_column(JSONB, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
     experiments: Mapped[list[Experiment]] = relationship(back_populates="session")
     hypotheses: Mapped[list[ResearchHypothesis]] = relationship(back_populates="session")
 
 
 class Strategy(Base):
     __tablename__ = "strategies"
-
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(String(200))
     description: Mapped[str | None] = mapped_column(Text)
@@ -70,13 +65,11 @@ class Strategy(Base):
     strategy_family: Mapped[str] = mapped_column(String(100), index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
     versions: Mapped[list[StrategyVersion]] = relationship(back_populates="strategy")
 
 
 class StrategyVersion(Base):
     __tablename__ = "strategy_versions"
-
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     strategy_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("strategies.id", ondelete="CASCADE"), index=True)
     version: Mapped[int] = mapped_column(Integer)
@@ -86,15 +79,12 @@ class StrategyVersion(Base):
     parent_experiment_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("experiments.id", ondelete="SET NULL"))
     generation: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-
     strategy: Mapped[Strategy] = relationship(back_populates="versions", foreign_keys=[strategy_id])
-
     __table_args__ = (UniqueConstraint("strategy_id", "version", name="uq_strategy_versions_strategy_version"),)
 
 
 class Experiment(Base):
     __tablename__ = "experiments"
-
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     session_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("research_sessions.id", ondelete="CASCADE"), index=True)
     strategy_version_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("strategy_versions.id", ondelete="SET NULL"))
@@ -105,7 +95,6 @@ class Experiment(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-
     session: Mapped[ResearchSession] = relationship(back_populates="experiments")
     result: Mapped[BacktestResult | None] = relationship(back_populates="experiment", uselist=False)
     reviews: Mapped[list[AIReview]] = relationship(back_populates="experiment")
@@ -113,7 +102,6 @@ class Experiment(Base):
 
 class BacktestResult(Base):
     __tablename__ = "backtest_results"
-
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     experiment_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("experiments.id", ondelete="CASCADE"), unique=True)
     metrics: Mapped[dict] = mapped_column(JSONB)
@@ -122,13 +110,11 @@ class BacktestResult(Base):
     total_return: Mapped[Decimal] = mapped_column(Numeric(24, 12), default=Decimal("0"))
     max_drawdown: Mapped[Decimal] = mapped_column(Numeric(24, 12), default=Decimal("0"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-
     experiment: Mapped[Experiment] = relationship(back_populates="result")
 
 
 class AIReview(Base):
     __tablename__ = "ai_reviews"
-
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     experiment_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("experiments.id", ondelete="CASCADE"), index=True)
     model: Mapped[str] = mapped_column(String(100))
@@ -137,27 +123,23 @@ class AIReview(Base):
     reasoning: Mapped[str] = mapped_column(Text)
     structured_output: Mapped[dict] = mapped_column(JSONB, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-
     experiment: Mapped[Experiment] = relationship(back_populates="reviews")
 
 
 class ResearchHypothesis(Base):
     __tablename__ = "research_hypotheses"
-
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     session_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("research_sessions.id", ondelete="CASCADE"), index=True)
     statement: Mapped[str] = mapped_column(Text)
     rationale: Mapped[str | None] = mapped_column(Text)
     status: Mapped[str] = mapped_column(String(30), default="proposed")
-    metadata: Mapped[dict] = mapped_column(JSONB, default=dict)
+    extra_metadata: Mapped[dict] = mapped_column("metadata", JSONB, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-
     session: Mapped[ResearchSession] = relationship(back_populates="hypotheses")
 
 
 class MarketCandle(Base):
     __tablename__ = "market_candles"
-
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     symbol: Mapped[str] = mapped_column(String(32))
     timeframe: Mapped[str] = mapped_column(String(16))
@@ -171,7 +153,6 @@ class MarketCandle(Base):
     quote_volume: Mapped[Decimal] = mapped_column(Numeric(30, 12))
     trade_count: Mapped[int] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-
     __table_args__ = (
         UniqueConstraint("symbol", "timeframe", "open_time", name="uq_market_candles_symbol_timeframe_open"),
         Index("ix_market_candles_lookup", "symbol", "timeframe", "open_time"),
@@ -180,7 +161,6 @@ class MarketCandle(Base):
 
 class Job(Base):
     __tablename__ = "jobs"
-
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     job_type: Mapped[str] = mapped_column(String(100), index=True)
     status: Mapped[JobStatus] = mapped_column(Enum(JobStatus, name="job_status"), default=JobStatus.PENDING, index=True)

@@ -171,6 +171,19 @@ def sha256_hex(value: Any) -> str:
     return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
 
 
+@dataclass(frozen=True, slots=True)
+class AuthorizationRecord:
+    """Read-only record loaded from PostgreSQL for execution authorization."""
+
+    authorization_hash: str
+    promotion_status: PromotionStatus
+    strategy_version_id: UUID
+    strategy_fingerprint: str
+    environment: PromotionStage
+    risk_policy_fingerprint: str
+    expires_at: datetime
+
+
 @dataclass(frozen=True)
 class AuthorizationSnapshot:
     promotion_id: UUID

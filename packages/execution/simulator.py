@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from decimal import Decimal
 from enum import Enum
 from uuid import UUID, uuid4
@@ -51,7 +52,7 @@ class SimulatedFill:
     side: Signal
     quantity: Decimal
     price: Decimal
-    executed_at: object
+    executed_at: datetime
 
 
 class ExecutionSimulator:

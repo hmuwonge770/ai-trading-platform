@@ -43,6 +43,13 @@ class JobStatus(str, enum.Enum):
     DEAD = "dead"
 
 
+class PortfolioStatus(str, enum.Enum):
+    CREATED = "created"
+    ACTIVE = "active"
+    PAUSED = "paused"
+    CLOSED = "closed"
+
+
 class ResearchSession(Base):
     __tablename__ = "research_sessions"
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
@@ -164,6 +171,57 @@ class MarketCandle(Base):
         UniqueConstraint("symbol", "timeframe", "open_time", name="uq_market_candles_symbol_timeframe_open"),
         Index("ix_market_candles_lookup", "symbol", "timeframe", "open_time"),
     )
+
+
+class Portfolio(Base):
+    __tablename__ = "portfolios"
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(String(200))
+    base_currency: Mapped[str] = mapped_column(String(16))
+    status: Mapped[PortfolioStatus] = mapped_column(Enum(PortfolioStatus, name="portfolio_status"), default=PortfolioStatus.CREATED)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    balances: Mapped[list[PortfolioBalance]] = relationship(back_populates="portfolio", cascade="all, delete-orphan")
+    positions: Mapped[list[PortfolioPosition]] = relationship(back_populates="portfolio", cascade="all, delete-orphan")
+    money_movements: Mapped[list[PortfolioMoneyMovement]] = relationship(back_populates="portfolio", cascade="all, delete-orphan")
+
+
+class PortfolioBalance(Base):
+    __tablename__ = "portfolio_balances"
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    portfolio_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("portfolios.id", ondelete="CASCADE"), index=True)
+    asset: Mapped[str] = mapped_column(String(16))
+    available: Mapped[Decimal] = mapped_column(Numeric(30, 18), default=Decimal("0"))
+    reserved: Mapped[Decimal] = mapped_column(Numeric(30, 18), default=Decimal("0"))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    portfolio: Mapped[Portfolio] = relationship(back_populates="balances")
+    __table_args__ = (UniqueConstraint("portfolio_id", "asset", name="uq_portfolio_balances_portfolio_asset"),)
+
+
+class PortfolioPosition(Base):
+    __tablename__ = "portfolio_positions"
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    portfolio_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("portfolios.id", ondelete="CASCADE"), index=True)
+    symbol: Mapped[str] = mapped_column(String(32))
+    quantity: Mapped[Decimal] = mapped_column(Numeric(30, 18), default=Decimal("0"))
+    average_entry_price: Mapped[Decimal] = mapped_column(Numeric(30, 18), default=Decimal("0"))
+    realized_pnl: Mapped[Decimal] = mapped_column(Numeric(30, 18), default=Decimal("0"))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    portfolio: Mapped[Portfolio] = relationship(back_populates="positions")
+    __table_args__ = (UniqueConstraint("portfolio_id", "symbol", name="uq_portfolio_positions_portfolio_symbol"),)
+
+
+class PortfolioMoneyMovement(Base):
+    __tablename__ = "portfolio_money_movements"
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    portfolio_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("portfolios.id", ondelete="CASCADE"), index=True)
+    asset: Mapped[str] = mapped_column(String(16))
+    movement_type: Mapped[str] = mapped_column(String(30))
+    amount: Mapped[Decimal] = mapped_column(Numeric(30, 18))
+    reference: Mapped[str] = mapped_column(String(100))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    portfolio: Mapped[Portfolio] = relationship(back_populates="money_movements")
+    __table_args__ = (UniqueConstraint("portfolio_id", "reference", name="uq_portfolio_money_movement_reference"),)
 
 
 class Job(Base):

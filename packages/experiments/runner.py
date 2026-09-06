@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import uuid
 from collections.abc import Sequence
-from datetime import datetime
-from decimal import Decimal
 
 from sqlalchemy.orm import Session
 
@@ -33,8 +31,8 @@ class ExperimentRunner:
         config: ExperimentConfig,
         candles: Sequence[MarketBar],
     ) -> Experiment:
-        if not candles:
-            raise ValueError("at least one candle is required")
+        if len(candles) < 3:
+            raise ValueError("at least three candles are required for train/validation/test")
         self._validate_candle_range(config, candles)
 
         experiment = self.manager.create(db, config)
@@ -87,6 +85,8 @@ class ExperimentRunner:
         candles: Sequence[MarketBar], config: ExperimentConfig
     ) -> tuple[tuple[MarketBar, ...], tuple[MarketBar, ...], tuple[MarketBar, ...]]:
         total = len(candles)
+        if total < 3:
+            raise ValueError("at least three candles are required for train/validation/test")
         train_count = max(1, int(total * config.dataset_split.train))
         validation_count = max(1, int(total * config.dataset_split.validation))
         if train_count + validation_count >= total:
@@ -100,7 +100,10 @@ class ExperimentRunner:
 
     @staticmethod
     def _validate_candle_range(config: ExperimentConfig, candles: Sequence[MarketBar]) -> None:
-        if any(candle.symbol != config.symbol or candle.timeframe != config.timeframe for candle in candles):
+        if any(
+            candle.symbol != config.symbol or candle.timeframe != config.timeframe
+            for candle in candles
+        ):
             raise ValueError("all candles must match the experiment symbol and timeframe")
         if candles[0].open_time < config.start_time or candles[-1].open_time >= config.end_time:
             raise ValueError("candles fall outside the configured experiment window")

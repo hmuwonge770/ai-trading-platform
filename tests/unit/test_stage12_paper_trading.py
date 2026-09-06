@@ -80,10 +80,10 @@ def test_signal_executes_on_next_candle_open_with_fee_and_slippage() -> None:
     assert fill_result.order is not None
     assert fill_result.fill is not None
     assert fill_result.fill.side == Signal.BUY
-    assert fill_result.fill.price == Decimal("103.03")
-    assert fill_result.fill.fee == Decimal("0.20606")
+    assert fill_result.fill.price == Decimal("104.03")
+    assert fill_result.fill.fee == Decimal("0.20806")
     assert engine.position_quantity == Decimal("2")
-    assert engine.cash == Decimal("793.73394")
+    assert engine.cash == Decimal("791.73194")
 
 
 def test_buy_then_sell_are_executed_on_following_candles() -> None:

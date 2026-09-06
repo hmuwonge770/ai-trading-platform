@@ -115,7 +115,7 @@ def validate_partition_isolation(
 def split_counts(total: int, train_ratio: Decimal, validation_ratio: Decimal) -> tuple[int, int, int]:
     """Calculate deterministic non-empty chronological partition sizes."""
     if total < 3:
-        raise LineageValidationError("at least three observations are required")
+        raise LineageValidationError("at least three candles are required for train/validation/test")
     train_count = max(1, int(total * train_ratio))
     validation_count = max(1, int(total * validation_ratio))
     if train_count + validation_count >= total:

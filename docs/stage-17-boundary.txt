@@ -1,0 +1,1 @@
+Stage 17 is restricted to Binance Spot Testnet. Production Binance endpoints are rejected. Exchange credentials are isolated to the exchange adapter, and unit tests use HTTP mocks without contacting Binance. Live production execution is outside this stage.

@@ -1,12 +1,12 @@
 from datetime import datetime, timezone
 from decimal import Decimal
+from uuid import uuid4
 
 import pytest
 
 from packages.execution import ExecutionConfig, ExecutionSimulator, ExecutionStatus
 from packages.strategies.models import MarketBar, Signal
 from packages.trading.paper import OrderIntent
-from uuid import uuid4
 
 
 def make_order(side: Signal, quantity: str = "2") -> OrderIntent:
@@ -72,15 +72,14 @@ def test_zero_volume_can_reject_without_creating_a_fill() -> None:
 
 
 def test_symbol_mismatch_is_rejected_before_simulation() -> None:
+    mismatched_order = OrderIntent(
+        intent_id=uuid4(), signal_id=uuid4(), strategy_version_id="strategy-v1",
+        symbol="ETHUSDT", timeframe="1m", side=Signal.BUY, quantity=Decimal("1"),
+        reference_price=Decimal("100"), client_order_id="paper-test", reason="test",
+    )
+
     with pytest.raises(ValueError, match="symbol"):
-        ExecutionSimulator().execute(make_order(Signal.BUY), make_candle()) if False else ExecutionSimulator().execute(
-            OrderIntent(
-                intent_id=uuid4(), signal_id=uuid4(), strategy_version_id="strategy-v1",
-                symbol="ETHUSDT", timeframe="1m", side=Signal.BUY, quantity=Decimal("1"),
-                reference_price=Decimal("100"), client_order_id="paper-test", reason="test",
-            ),
-            make_candle(),
-        )
+        ExecutionSimulator().execute(mismatched_order, make_candle())
 
 
 def test_invalid_execution_config_is_rejected() -> None:

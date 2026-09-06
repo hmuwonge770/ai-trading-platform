@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from enum import StrEnum
 from typing import Any, Mapping
@@ -55,6 +56,9 @@ class CredentialRedactor:
         "api_key", "api_secret", "secret", "password", "token", "access_token",
         "refresh_token", "private_key", "authorization", "credentials",
     })
+    _TEXT_PATTERN = re.compile(
+        r"(?i)(api_key|api_secret|password|token|access_token)=([^\s&;,\n\t]*)"
+    )
 
     @classmethod
     def redact_mapping(cls, value: Mapping[str, Any]) -> dict[str, Any]:
@@ -65,13 +69,4 @@ class CredentialRedactor:
 
     @classmethod
     def redact_text(cls, value: str) -> str:
-        result = value
-        for marker in ("api_key=", "api_secret=", "password=", "token=", "access_token="):
-            while marker in result.lower():
-                lower = result.lower()
-                start = lower.index(marker) + len(marker)
-                end = start
-                while end < len(result) and result[end] not in " &;,\n\t":
-                    end += 1
-                result = result[:start] + "[REDACTED]" + result[end:]
-        return result
+        return cls._TEXT_PATTERN.sub(r"\1=[REDACTED]", value)

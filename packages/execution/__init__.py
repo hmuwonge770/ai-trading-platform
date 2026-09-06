@@ -1,5 +1,6 @@
-"""Execution simulation primitives."""
+"""Execution simulation and service boundaries."""
 
+from packages.execution.service import ExecutionResult, ExecutionService
 from packages.execution.simulator import (
     ExecutionConfig,
     ExecutionSimulator,
@@ -9,9 +10,6 @@ from packages.execution.simulator import (
 )
 
 __all__ = [
-    "ExecutionConfig",
-    "ExecutionSimulator",
-    "ExecutionStatus",
-    "SimulatedFill",
-    "SimulatedOrder",
+    "ExecutionConfig", "ExecutionResult", "ExecutionService", "ExecutionSimulator",
+    "ExecutionStatus", "SimulatedFill", "SimulatedOrder",
 ]

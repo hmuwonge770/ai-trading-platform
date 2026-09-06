@@ -26,9 +26,9 @@ from .domain import (
 class PromotionRepository:
     """PostgreSQL persistence boundary for promotion authorization.
 
-    Approval and activation paths lock the promotion row with FOR UPDATE so
-    concurrent operators cannot observe or commit conflicting lifecycle state.
-    The repository never executes an exchange request.
+    Approval, activation and halt paths lock the promotion row with FOR UPDATE
+    so concurrent operators cannot observe or commit conflicting lifecycle
+    state. The repository never executes an exchange request.
     """
 
     db: Session
@@ -70,12 +70,11 @@ class PromotionRepository:
         self.db.commit()
         return promotion
 
+    def get(self, promotion_id: UUID) -> Promotion | None:
+        return self._find(promotion_id, lock=False)
+
     def get_for_update(self, promotion_id: UUID) -> Promotion | None:
-        row = self.db.execute(
-            text("SELECT * FROM strategy_promotions WHERE id = :id FOR UPDATE"),
-            {"id": str(promotion_id)},
-        ).mappings().first()
-        return None if row is None else self._load_promotion(row)
+        return self._find(promotion_id, lock=True)
 
     def add_approval(self, promotion_id: UUID, *, approver_id: str,
                      role: ApprovalRole, capital_limit: Decimal,
@@ -132,6 +131,19 @@ class PromotionRepository:
         self.db.commit()
         return promotion
 
+    def halt(self, promotion_id: UUID) -> Promotion:
+        """Atomically halt an active promotion."""
+        promotion = self.get_for_update(promotion_id)
+        if promotion is None:
+            raise LookupError("promotion not found")
+        promotion.halt()
+        self.db.execute(text("""
+            UPDATE strategy_promotions SET status = 'halted', halted_at = :halted_at
+            WHERE id = :id
+        """), {"halted_at": datetime.now(timezone.utc), "id": str(promotion_id)})
+        self.db.commit()
+        return promotion
+
     def save_authorization(self, snapshot: AuthorizationSnapshot) -> AuthorizationSnapshot:
         self.db.execute(text("""
             INSERT INTO authorization_snapshots
@@ -153,6 +165,14 @@ class PromotionRepository:
         })
         self.db.commit()
         return snapshot
+
+    def _find(self, promotion_id: UUID, *, lock: bool) -> Promotion | None:
+        suffix = " FOR UPDATE" if lock else ""
+        row = self.db.execute(
+            text(f"SELECT * FROM strategy_promotions WHERE id = :id{suffix}"),
+            {"id": str(promotion_id)},
+        ).mappings().first()
+        return None if row is None else self._load_promotion(row)
 
     @staticmethod
     def _promotion_params(promotion: Promotion) -> dict[str, Any]:

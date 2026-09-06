@@ -1,3 +1,4 @@
+from dataclasses import replace
 from decimal import Decimal
 from uuid import uuid4
 
@@ -13,7 +14,7 @@ from packages.promotion import (
     PromotionStage,
     StrategyVersion,
 )
-from packages.promotion.domain import PromotionStatus
+from packages.promotion.domain import Approval, ApprovalDecision, ApprovalRole, PromotionStatus
 
 
 FINGERPRINT = "a" * 64
@@ -67,8 +68,6 @@ def full_evidence() -> FullLiveEvidence:
 
 
 def approve(promotion: Promotion) -> None:
-    from packages.promotion.domain import Approval, ApprovalDecision, ApprovalRole
-
     for approver, role in (("risk", ApprovalRole.RISK_MANAGER), ("admin", ApprovalRole.ADMIN)):
         promotion.add_approval(
             Approval(
@@ -105,8 +104,7 @@ def test_full_live_fails_closed_when_any_required_gate_is_missing():
     promotion = make_promotion()
     approve(promotion)
     authorization = make_authorization(promotion)
-    evidence = full_evidence()
-    evidence = FullLiveEvidence(**{**evidence.__dict__, "kill_switch_disabled": False})
+    evidence = replace(full_evidence(), kill_switch_disabled=False)
 
     report = FullLiveGate.evaluate(
         promotion=promotion,
@@ -126,7 +124,7 @@ def test_full_live_rejects_wrong_production_endpoint():
     promotion = make_promotion()
     approve(promotion)
     authorization = make_authorization(promotion)
-    evidence = FullLiveEvidence(**{**full_evidence().__dict__, "production_endpoint": "https://testnet.binance.vision"})
+    evidence = replace(full_evidence(), production_endpoint="https://testnet.binance.vision")
 
     report = FullLiveGate.evaluate(
         promotion=promotion,

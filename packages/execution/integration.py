@@ -5,18 +5,18 @@ from datetime import datetime, timezone
 from typing import Callable
 from uuid import UUID
 
+from packages.execution.service import ExecutionResult, ExecutionService
 from packages.promotion import PromotionStatus
 from packages.risk import RiskDecision, RiskReason
+from packages.strategies.models import MarketBar
 from packages.trading.environment import EnvironmentGuard, TradingEnvironment
 from packages.trading.paper import OrderIntent
-from packages.strategies.models import MarketBar
-
-from packages.execution.service import ExecutionResult, ExecutionService
 
 
 @dataclass(frozen=True, slots=True)
 class AuthorizationCheck:
     authorization_hash: str
+    promotion_status: PromotionStatus
     strategy_version_id: UUID
     environment: TradingEnvironment
     risk_policy_fingerprint: str
@@ -53,7 +53,7 @@ class AuthorizationStore:
 
     def get_active(self, authorization_hash: str, *, now: datetime | None = None) -> ExecutionAuthorization | None:
         record = self._load(authorization_hash)
-        if record is None:
+        if record is None or record.promotion_status != PromotionStatus.ACTIVE:
             return None
         current = now or datetime.now(timezone.utc)
         if current >= record.expires_at:
@@ -70,11 +70,11 @@ class AuthorizationStore:
 class PromotionExecutionGateway:
     """Final deterministic gate joining promotion, environment, risk and execution.
 
-    The gateway is deliberately downstream of AI/research. It accepts only a
-    persisted authorization, validates its current promotion state through the
-    supplied store, then delegates to ExecutionService, which independently
-    requires a positive RiskDecision. No AI component or caller can bypass the
-    risk or environment checks by invoking this boundary directly.
+    A caller must present an authorization whose persisted promotion is ACTIVE
+    and unexpired. The gateway validates strategy and risk-policy fingerprints,
+    enforces the environment guard, then delegates to ExecutionService, which
+    independently requires a positive RiskDecision. No AI/research component
+    can bypass these controls or submit directly to an exchange.
     """
 
     def __init__(self, execution: ExecutionService, authorization_store: AuthorizationStore) -> None:

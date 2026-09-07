@@ -16,6 +16,16 @@ from .loop import AutonomousSignalLoop, MarketEvent
 from .paper_runner import AutonomousPaperRunner, PaperRunOutcome
 from .positions import AutonomousPositionAgent, ManagedPosition, PositionAction, PositionDecision, PositionPolicy
 from .recovery import AutonomousRecoveryEngine, RecoveryAction, RecoveryDecision, RecoveryEvent, RecoveryPolicy, RecoveryState
+from .reconciliation import (
+    AutonomousTestnetReconciler,
+    ExchangeSnapshot,
+    ExpectedOrder,
+    ObservedOrder,
+    ReconciliationPolicy,
+    ReconciliationResult,
+    ReconciliationStatus,
+    TestnetStateProvider,
+)
 from .risk import AutonomousRiskEngine, AutonomousRiskPolicy, AutonomousRiskResult
 from .testnet import BinanceTestnetExecutionSubmitter, TestnetExecutionPolicy, TestnetExecutionTransport
 from .testnet_runner import AutonomousTestnetRunner, TestnetRunOutcome
@@ -29,5 +39,7 @@ __all__ = [
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance",
     "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",
     "AutonomousPaperRunner", "PaperRunOutcome", "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy",
-    "TestnetExecutionTransport", "AutonomousTestnetRunner", "TestnetRunOutcome",
+    "TestnetExecutionTransport", "AutonomousTestnetRunner", "TestnetRunOutcome", "AutonomousTestnetReconciler",
+    "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder", "ReconciliationPolicy", "ReconciliationResult",
+    "ReconciliationStatus", "TestnetStateProvider",
 ]

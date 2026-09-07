@@ -1,0 +1,9 @@
+- [x] Immutable live authorization handoff required
+- [x] Deterministic risk approval required
+- [x] Explicit LIVE control required
+- [x] Live promotion environment required
+- [x] Strategy identity must match
+- [x] Client order IDs deduplicated
+- [x] Submitter capability injected explicitly
+- [x] Submitter failures fail closed
+- [x] No credentials or exchange client owned by autonomy layer

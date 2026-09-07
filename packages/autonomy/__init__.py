@@ -1,17 +1,13 @@
 """Autonomous trading control-plane primitives."""
 
-from .authorization_consumption import (
-    AutonomousLiveAuthorizationConsumer,
-    AuthorizationConsumptionReport,
-    AuthorizationConsumptionStatus,
-    LiveExecutionAuthorization,
-)
+from .authorization_consumption import AutonomousLiveAuthorizationConsumer, AuthorizationConsumptionReport, AuthorizationConsumptionStatus, LiveExecutionAuthorization
 from .authorization_freshness import AutonomousAuthorizationFreshnessGuard, AuthorizationFreshnessContext, AuthorizationFreshnessReport, AuthorizationFreshnessStatus
 from .authorization_preflight import AuthorizationPreflightReport, AuthorizationPreflightStatus, AutonomousLiveAuthorizationPreflight
 from .control import AutonomousControl, AutonomousMode, AutonomousState
 from .execution import AutonomousExecutionLoop, AutonomousExecutionOutcome, ExecutionSubmitter
 from .intelligence import AISignalModel, AISignalProposal, AutonomousMarketIntelligence, DeterministicRegimeDetector, IntelligencePolicy, MarketRegime, RegimeAssessment
 from .learning import DriftAssessment, LearningAction, LearningPolicy, StrategyLearningEngine, StrategyPerformance
+from .live_execution import AutonomousLiveExecutionBoundary, LiveExecutionReport, LiveExecutionStatus, LiveExecutionSubmitter
 from .loop import AutonomousSignalLoop, MarketEvent
 from .paper_runner import AutonomousPaperRunner, PaperRunOutcome
 from .performance import AutonomousTestnetPerformanceMonitor, ExecutionObservation, PerformancePolicy, PerformanceReport, PerformanceStatus
@@ -32,6 +28,7 @@ __all__ = [
     "AISignalModel", "AISignalProposal", "AutonomousMarketIntelligence", "DeterministicRegimeDetector",
     "IntelligencePolicy", "MarketRegime", "RegimeAssessment", "AutonomousRiskEngine", "AutonomousRiskPolicy",
     "AutonomousRiskResult", "AutonomousExecutionLoop", "AutonomousExecutionOutcome", "ExecutionSubmitter",
+    "AutonomousLiveExecutionBoundary", "LiveExecutionReport", "LiveExecutionStatus", "LiveExecutionSubmitter",
     "AutonomousPositionAgent", "ManagedPosition", "PositionAction", "PositionDecision", "PositionPolicy",
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance",
     "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",

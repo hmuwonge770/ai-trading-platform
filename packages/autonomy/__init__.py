@@ -6,6 +6,7 @@ from .authorization_freshness import AutonomousAuthorizationFreshnessGuard, Auth
 from .authorization_preflight import AuthorizationPreflightReport, AuthorizationPreflightStatus, AutonomousLiveAuthorizationPreflight
 from .control import AutonomousControl, AutonomousMode, AutonomousState
 from .execution import AutonomousExecutionLoop, AutonomousExecutionOutcome, ExecutionSubmitter
+from .health_state import AutonomousHealthStateMachine, AutonomousHealthState, HealthObservation, HealthStatePolicy, HealthStateReport
 from .intelligence import AISignalModel, AISignalProposal, AutonomousMarketIntelligence, DeterministicRegimeDetector, IntelligencePolicy, MarketRegime, RegimeAssessment
 from .learning import DriftAssessment, LearningAction, LearningPolicy, StrategyLearningEngine, StrategyPerformance
 from .live_adapter import AutonomousLiveAdapterPreflight, LiveAdapterPolicy, LiveAdapterPreflightContext, LiveAdapterPreflightReport, LiveAdapterStatus, LiveExchangeTransport
@@ -33,6 +34,7 @@ __all__ = [
     "AuthorizationFreshnessContext", "AuthorizationFreshnessReport", "AuthorizationFreshnessStatus", "AutonomousAuthorizationFreshnessGuard",
     "AuthorizationPreflightReport", "AuthorizationPreflightStatus", "AutonomousLiveAuthorizationPreflight",
     "AutonomousControl", "AutonomousMode", "AutonomousState", "AutonomousSignalLoop", "MarketEvent",
+    "AutonomousHealthStateMachine", "AutonomousHealthState", "HealthObservation", "HealthStatePolicy", "HealthStateReport",
     "AISignalModel", "AISignalProposal", "AutonomousMarketIntelligence", "DeterministicRegimeDetector",
     "IntelligencePolicy", "MarketRegime", "RegimeAssessment", "AutonomousRiskEngine", "AutonomousRiskPolicy",
     "AutonomousRiskResult", "AutonomousExecutionLoop", "AutonomousExecutionOutcome", "ExecutionSubmitter",

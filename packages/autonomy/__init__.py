@@ -14,6 +14,7 @@ from .intelligence import (
 from .learning import DriftAssessment, LearningAction, LearningPolicy, StrategyLearningEngine, StrategyPerformance
 from .loop import AutonomousSignalLoop, MarketEvent
 from .positions import AutonomousPositionAgent, ManagedPosition, PositionAction, PositionDecision, PositionPolicy
+from .recovery import AutonomousRecoveryEngine, RecoveryAction, RecoveryDecision, RecoveryEvent, RecoveryPolicy, RecoveryState
 from .risk import AutonomousRiskEngine, AutonomousRiskPolicy, AutonomousRiskResult
 
 __all__ = [
@@ -23,4 +24,5 @@ __all__ = [
     "AutonomousRiskResult", "AutonomousExecutionLoop", "AutonomousExecutionOutcome", "ExecutionSubmitter",
     "AutonomousPositionAgent", "ManagedPosition", "PositionAction", "PositionDecision", "PositionPolicy",
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance",
+    "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",
 ]

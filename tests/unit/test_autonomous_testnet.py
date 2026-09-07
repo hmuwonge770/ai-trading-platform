@@ -43,8 +43,6 @@ class FakeTestnet:
 
 
 def running_testnet_control() -> AutonomousControl:
-    control = AutonomousControl().with_mode(AutonomousMode.TESTNET).with_trading(True)
-    control = control.with_kill_switch(False)
     return AutonomousControl(
         mode=AutonomousMode.TESTNET,
         state=AutonomousState.RUNNING,
@@ -67,7 +65,7 @@ def candle() -> MarketBar:
     )
 
 
-def order() -> OrderIntent:
+def order(client_order_id: str = "auto-testnet-1") -> OrderIntent:
     return OrderIntent(
         intent_id=uuid4(),
         signal_id=uuid4(),
@@ -77,7 +75,7 @@ def order() -> OrderIntent:
         side=Signal.BUY,
         quantity=Decimal("1"),
         reference_price=Decimal("100"),
-        client_order_id="auto-testnet-1",
+        client_order_id=client_order_id,
         reason="validated autonomous signal",
     )
 
@@ -124,8 +122,9 @@ def test_non_testnet_mode_is_rejected() -> None:
     exchange = FakeTestnet()
     control = running_testnet_control().with_mode(AutonomousMode.PAPER)
     submitter = BinanceTestnetExecutionSubmitter(control, exchange)
+    item = order()
 
-    result = submitter.submit(order(), approved_risk(order()), candle())
+    result = submitter.submit(item, approved_risk(item), candle())
 
     assert result.accepted is False
     assert "Testnet mode" in result.reason
@@ -149,9 +148,9 @@ def test_risk_identity_mismatch_is_rejected() -> None:
     exchange = FakeTestnet()
     submitter = BinanceTestnetExecutionSubmitter(running_testnet_control(), exchange)
     submitter.preflight()
-    item = order()
+    item = order("auto-testnet-1")
     decision = approved_risk(item)
-    other = order()
+    other = order("auto-testnet-2")
 
     result = submitter.submit(other, decision, candle())
 

@@ -29,6 +29,11 @@ from .promotion import (
     PromotionReadinessReport,
     PromotionReadinessStatus,
 )
+from .promotion_integration import (
+    AutonomousPromotionWorkflowIntegration,
+    PromotionEvidenceBinding,
+    PromotionHandoffStatus,
+)
 from .recovery import AutonomousRecoveryEngine, RecoveryAction, RecoveryDecision, RecoveryEvent, RecoveryPolicy, RecoveryState
 from .reconciliation import (
     AutonomousTestnetReconciler,
@@ -55,6 +60,7 @@ __all__ = [
     "AutonomousPaperRunner", "PaperRunOutcome", "AutonomousTestnetPerformanceMonitor", "ExecutionObservation",
     "PerformancePolicy", "PerformanceReport", "PerformanceStatus", "AutonomousPromotionReadinessGate",
     "PromotionEvidence", "PromotionReadinessPolicy", "PromotionReadinessReport", "PromotionReadinessStatus",
+    "AutonomousPromotionWorkflowIntegration", "PromotionEvidenceBinding", "PromotionHandoffStatus",
     "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy", "TestnetExecutionTransport", "AutonomousTestnetRunner",
     "TestnetRunOutcome", "AutonomousTestnetReconciler", "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder",
     "ReconciliationPolicy", "ReconciliationResult", "ReconciliationStatus", "TestnetStateProvider",

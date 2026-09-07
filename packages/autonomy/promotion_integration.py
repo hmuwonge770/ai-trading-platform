@@ -48,8 +48,6 @@ class AutonomousPromotionWorkflowIntegration:
             raise ValueError("evidence strategy version does not match strategy")
         if report.strategy_version_id != strategy.strategy_version_id:
             raise ValueError("readiness report strategy version does not match strategy")
-        if report.target_stage is not report.target_stage:
-            raise ValueError("invalid target stage")
 
         if report.status is PromotionReadinessStatus.READY:
             handoff = PromotionHandoffStatus.READY_FOR_NON_LIVE_WORKFLOW

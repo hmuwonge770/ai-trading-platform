@@ -1,14 +1,16 @@
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from uuid import uuid4
 
 from packages.autonomy.authorization_consumption import LiveExecutionAuthorization
-from packages.autonomy.control import AutonomousControl, AutonomousMode
+from packages.autonomy.control import AutonomousControl, AutonomousMode, AutonomousState
 from packages.autonomy.decision import Decision, DecisionAction
 from packages.autonomy.live_execution import (
     AutonomousLiveExecutionBoundary,
     LiveExecutionStatus,
 )
 from packages.autonomy.risk import AutonomousRiskResult
+from packages.promotion.domain import PromotionStage
 from packages.trading.paper import OrderIntent
 
 
@@ -48,14 +50,14 @@ def make_fixture() -> tuple[LiveExecutionAuthorization, AutonomousRiskResult, Au
         promotion_id=uuid4(),
         strategy_version_id=strategy_version_id,
         strategy_fingerprint="b" * 64,
-        environment=AutonomousMode.LIVE,
+        environment=PromotionStage.LIVE_CANARY,
         risk_policy_fingerprint="c" * 64,
         evidence_snapshot_hash="d" * 64,
-        expires_at=None,
+        expires_at=datetime.now(timezone.utc) + timedelta(minutes=5),
     )
     control = AutonomousControl(
         mode=AutonomousMode.LIVE,
-        state="RUNNING",
+        state=AutonomousState.RUNNING,
         trading_enabled=True,
         kill_switch_enabled=False,
         circuit_breaker_open=False,
@@ -165,3 +167,26 @@ def test_submitter_failure_fails_closed() -> None:
 
     assert report.status is LiveExecutionStatus.BLOCKED
     assert report.reasons == ("live_submitter_failed:RuntimeError",)
+
+
+def test_non_live_authorization_environment_is_blocked() -> None:
+    authorization, risk, control = make_fixture()
+    authorization = LiveExecutionAuthorization(
+        authorization.authorization_hash,
+        authorization.promotion_id,
+        authorization.strategy_version_id,
+        authorization.strategy_fingerprint,
+        PromotionStage.TESTNET,
+        authorization.risk_policy_fingerprint,
+        authorization.evidence_snapshot_hash,
+        authorization.expires_at,
+    )
+
+    report = AutonomousLiveExecutionBoundary(RecordingSubmitter()).submit(
+        authorization=authorization,
+        risk_result=risk,
+        control=control,
+    )
+
+    assert report.status is LiveExecutionStatus.BLOCKED
+    assert "authorization_environment_not_live" in report.reasons

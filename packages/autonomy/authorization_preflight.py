@@ -9,19 +9,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import StrEnum
+from uuid import UUID
 
-from packages.promotion.domain import (
-    LIVE_STAGES,
-    ApprovalDecision,
-    Promotion,
-    PromotionStatus,
-    StrategyVersion,
-)
+from packages.promotion.domain import LIVE_STAGES, ApprovalDecision, Promotion, PromotionStatus, StrategyVersion
 
-from .promotion_integration import (
-    PromotionEvidenceBinding,
-    PromotionHandoffStatus,
-)
+from .promotion_integration import PromotionEvidenceBinding, PromotionHandoffStatus
 
 
 class AuthorizationPreflightStatus(StrEnum):
@@ -32,7 +24,7 @@ class AuthorizationPreflightStatus(StrEnum):
 @dataclass(frozen=True, slots=True)
 class AuthorizationPreflightReport:
     status: AuthorizationPreflightStatus
-    promotion_id: object
+    promotion_id: UUID
     evidence_hash: str
     reasons: tuple[str, ...]
 
@@ -44,11 +36,7 @@ class AuthorizationPreflightReport:
 class AutonomousLiveAuthorizationPreflight:
     """Validate a live promotion before independent human authorization."""
 
-    def assess(
-        self,
-        promotion: Promotion,
-        binding: PromotionEvidenceBinding,
-    ) -> AuthorizationPreflightReport:
+    def assess(self, promotion: Promotion, binding: PromotionEvidenceBinding) -> AuthorizationPreflightReport:
         reasons: list[str] = []
         strategy: StrategyVersion = promotion.strategy_version
 
@@ -73,5 +61,9 @@ class AutonomousLiveAuthorizationPreflight:
                 reasons.append("approval_evidence_hash_mismatch")
                 break
 
-        status = AuthorizationPreflightStatus.BLOCKED if reasons else AuthorizationPreflightStatus.READY_FOR_HUMAN_AUTHORIZATION
+        status = (
+            AuthorizationPreflightStatus.BLOCKED
+            if reasons
+            else AuthorizationPreflightStatus.READY_FOR_HUMAN_AUTHORIZATION
+        )
         return AuthorizationPreflightReport(status, promotion.promotion_id, binding.evidence_hash, tuple(reasons))

@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Any, Protocol
 
 from packages.autonomy.control import AutonomousControl, AutonomousMode
-from packages.execution.binance_testnet import BinanceSpotTestnetClient
 from packages.execution.service import ExecutionResult
 from packages.risk import RiskDecision, RiskReason
 from packages.strategies.models import MarketBar
@@ -14,6 +13,8 @@ from packages.trading.paper import OrderIntent
 
 
 class TestnetExecutionTransport(Protocol):
+    def ping(self) -> None: ...
+    def get_account(self) -> dict[str, Any]: ...
     def execute(self, order: OrderIntent, candle: MarketBar): ...
 
 
@@ -25,18 +26,16 @@ class TestnetExecutionPolicy:
 
 
 class BinanceTestnetExecutionSubmitter:
-    """Adapt the Binance Spot Testnet client to the autonomous execution boundary.
+    """Adapt a Binance Spot Testnet client to autonomous execution.
 
-    This class is deliberately incapable of targeting Binance production: the
-    underlying client is already hard-wired to the Spot Testnet endpoint. The
-    control plane must additionally be explicitly RUNNING in TESTNET mode with
-    trading enabled, the kill switch off, and the circuit breaker closed.
+    The underlying exchange adapter is hard-wired to Spot Testnet. This boundary
+    adds the independent autonomous TESTNET control and account preflight gates.
     """
 
     def __init__(
         self,
         control: AutonomousControl,
-        client: BinanceSpotTestnetClient,
+        client: TestnetExecutionTransport,
         *,
         policy: TestnetExecutionPolicy | None = None,
     ) -> None:
@@ -50,7 +49,9 @@ class BinanceTestnetExecutionSubmitter:
         self._require_testnet_control()
         self.client.ping()
         if self.policy.require_account_preflight:
-            self.client.get_account()
+            account = self.client.get_account()
+            if not isinstance(account, dict):
+                raise RuntimeError("Binance Testnet account preflight returned an invalid payload")
         self._preflight_ok = True
 
     def submit(
@@ -75,7 +76,7 @@ class BinanceTestnetExecutionSubmitter:
 
         try:
             simulated_order, fill = self.client.execute(order, candle)
-        except Exception as exc:  # boundary converts exchange failures to safe rejection
+        except Exception as exc:  # exchange failures must not become false success
             return ExecutionResult(False, f"Binance Testnet execution failed: {exc}", None, None)
 
         return ExecutionResult(

@@ -12,6 +12,7 @@ from .intelligence import (
     RegimeAssessment,
 )
 from .loop import AutonomousSignalLoop, MarketEvent
+from .positions import AutonomousPositionAgent, ManagedPosition, PositionAction, PositionDecision, PositionPolicy
 from .risk import AutonomousRiskEngine, AutonomousRiskPolicy, AutonomousRiskResult
 
 __all__ = [
@@ -33,4 +34,9 @@ __all__ = [
     "AutonomousExecutionLoop",
     "AutonomousExecutionOutcome",
     "ExecutionSubmitter",
+    "AutonomousPositionAgent",
+    "ManagedPosition",
+    "PositionAction",
+    "PositionDecision",
+    "PositionPolicy",
 ]

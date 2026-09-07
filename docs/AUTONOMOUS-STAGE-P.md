@@ -1,10 +1,10 @@
 # Autonomous Stage P — Controlled Promotion Readiness
 
+Stage P adds a deterministic, read-only readiness gate that combines existing Testnet reconciliation, accounting, performance, and recovery evidence for an immutable strategy version.
+
 ## Objective
 
-Stage P adds a deterministic, read-only readiness gate that combines the existing Testnet reconciliation, accounting, performance, and recovery evidence for an immutable strategy version.
-
-The gate answers **whether the evidence is sufficient for a requested non-live stage**. It does not create, approve, activate, or mutate a promotion.
+The gate answers whether the evidence is sufficient for a requested non-live promotion stage. It does not create, approve, activate, or mutate a promotion.
 
 ## Inputs
 
@@ -16,11 +16,11 @@ The gate answers **whether the evidence is sufficient for a requested non-live s
 - evidence completeness;
 - requested target stage.
 
-## Behavior
+## Decisions
 
-A strategy is `READY` only when all supplied evidence is healthy, evidence is complete, recovery failures are within policy, and the target is an explicitly permitted non-live stage.
+`READY` requires healthy reconciliation, accounting, and performance evidence, complete evidence, and no recovery failures beyond policy. PAPER and TESTNET are the only autonomous readiness targets.
 
-Any unhealthy evidence produces `REVIEW`. Unsupported targets, including all live stages, produce `BLOCKED`.
+Unhealthy evidence produces `REVIEW`. Unsupported targets, including all live stages, produce `BLOCKED`.
 
 ## Safety boundaries
 
@@ -32,7 +32,3 @@ Any unhealthy evidence produces `REVIEW`. Unsupported targets, including all liv
 - existing promotion, authorization, risk, reconciliation, accounting, recovery, kill-switch, and circuit-breaker controls remain authoritative.
 
 A `READY` report is evidence for a later promotion workflow, not an authorization to trade.
-
-## Next stage
-
-The next stage should integrate readiness evidence with the existing promotion workflow while preserving explicit human authorization for live capital and live-stage activation.

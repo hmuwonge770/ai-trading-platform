@@ -1,5 +1,7 @@
 from decimal import Decimal
 
+import pytest
+
 from packages.autonomy.learning import DriftAssessment, LearningAction
 from packages.autonomy.strategy_evaluation import (
     AutonomousStrategyEvaluator,
@@ -42,7 +44,7 @@ def test_low_score_is_rejected() -> None:
 
 
 def test_empty_strategy_id_is_rejected() -> None:
-    report = AutonomousStrategyEvaluator().evaluate(
-        DriftAssessment("", LearningAction.CONTINUE, Decimal("0.8"), (), 20)
-    )
-    assert report is not None
+    with pytest.raises(ValueError, match="strategy_version_id is required"):
+        AutonomousStrategyEvaluator().evaluate(
+            DriftAssessment("", LearningAction.CONTINUE, Decimal("0.8"), (), 20)
+        )

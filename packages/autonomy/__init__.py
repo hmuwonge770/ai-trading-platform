@@ -11,32 +11,16 @@ from .intelligence import (
     MarketRegime,
     RegimeAssessment,
 )
+from .learning import DriftAssessment, LearningAction, LearningPolicy, StrategyLearningEngine, StrategyPerformance
 from .loop import AutonomousSignalLoop, MarketEvent
 from .positions import AutonomousPositionAgent, ManagedPosition, PositionAction, PositionDecision, PositionPolicy
 from .risk import AutonomousRiskEngine, AutonomousRiskPolicy, AutonomousRiskResult
 
 __all__ = [
-    "AutonomousControl",
-    "AutonomousMode",
-    "AutonomousState",
-    "AutonomousSignalLoop",
-    "MarketEvent",
-    "AISignalModel",
-    "AISignalProposal",
-    "AutonomousMarketIntelligence",
-    "DeterministicRegimeDetector",
-    "IntelligencePolicy",
-    "MarketRegime",
-    "RegimeAssessment",
-    "AutonomousRiskEngine",
-    "AutonomousRiskPolicy",
-    "AutonomousRiskResult",
-    "AutonomousExecutionLoop",
-    "AutonomousExecutionOutcome",
-    "ExecutionSubmitter",
-    "AutonomousPositionAgent",
-    "ManagedPosition",
-    "PositionAction",
-    "PositionDecision",
-    "PositionPolicy",
+    "AutonomousControl", "AutonomousMode", "AutonomousState", "AutonomousSignalLoop", "MarketEvent",
+    "AISignalModel", "AISignalProposal", "AutonomousMarketIntelligence", "DeterministicRegimeDetector",
+    "IntelligencePolicy", "MarketRegime", "RegimeAssessment", "AutonomousRiskEngine", "AutonomousRiskPolicy",
+    "AutonomousRiskResult", "AutonomousExecutionLoop", "AutonomousExecutionOutcome", "ExecutionSubmitter",
+    "AutonomousPositionAgent", "ManagedPosition", "PositionAction", "PositionDecision", "PositionPolicy",
+    "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance",
 ]

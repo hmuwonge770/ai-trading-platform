@@ -1,0 +1,1 @@
+Stage AB security controls: no exchange credentials, no exchange clients, no order mutation, no authorization mutation, no capital mutation, no risk-policy mutation, and no runtime-state mutation. Notification sinks are application-owned capabilities.

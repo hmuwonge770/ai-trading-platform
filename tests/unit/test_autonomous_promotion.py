@@ -2,14 +2,14 @@ from uuid import uuid4
 
 import pytest
 
+from packages.autonomy.accounting import AccountingStatus
+from packages.autonomy.performance import PerformanceStatus
 from packages.autonomy.promotion import (
     AutonomousPromotionReadinessGate,
     PromotionEvidence,
     PromotionReadinessPolicy,
     PromotionReadinessStatus,
 )
-from packages.autonomy.accounting import AccountingStatus
-from packages.autonomy.performance import PerformanceStatus
 from packages.autonomy.reconciliation import ReconciliationStatus
 from packages.promotion.domain import PromotionStage, StrategyVersion
 
@@ -29,7 +29,11 @@ def healthy_evidence(version_id):
 
 def test_healthy_testnet_evidence_is_ready():
     s = strategy()
-    report = AutonomousPromotionReadinessGate().assess(s, healthy_evidence(s.strategy_version_id), PromotionStage.TESTNET)
+    report = AutonomousPromotionReadinessGate().assess(
+        s,
+        healthy_evidence(s.strategy_version_id),
+        PromotionStage.TESTNET,
+    )
     assert report.status is PromotionReadinessStatus.READY
     assert report.ready
     assert report.reasons == ()
@@ -50,7 +54,11 @@ def test_unhealthy_evidence_requires_review():
 
 def test_live_target_is_blocked_even_with_healthy_evidence():
     s = strategy()
-    report = AutonomousPromotionReadinessGate().assess(s, healthy_evidence(s.strategy_version_id), PromotionStage.LIVE_CANARY)
+    report = AutonomousPromotionReadinessGate().assess(
+        s,
+        healthy_evidence(s.strategy_version_id),
+        PromotionStage.LIVE_CANARY,
+    )
     assert report.status is PromotionReadinessStatus.BLOCKED
     assert "target_stage_requires_existing_authorization" in report.reasons
 
@@ -58,10 +66,14 @@ def test_live_target_is_blocked_even_with_healthy_evidence():
 def test_strategy_evidence_mismatch_is_rejected():
     s = strategy()
     with pytest.raises(ValueError, match="evidence strategy version"):
-        AutonomousPromotionReadinessGate().assess(s, healthy_evidence(uuid4()), PromotionStage.TESTNET)
+        AutonomousPromotionReadinessGate().assess(
+            s,
+            healthy_evidence(uuid4()),
+            PromotionStage.TESTNET,
+        )
 
 
-def test_recovery_failures_block_readiness_by_default():
+def test_recovery_failures_require_review_by_default():
     s = strategy()
     evidence = PromotionEvidence(
         s.strategy_version_id,

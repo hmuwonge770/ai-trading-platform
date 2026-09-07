@@ -1,6 +1,7 @@
 """Autonomous trading control-plane primitives."""
 
 from .control import AutonomousControl, AutonomousMode, AutonomousState
+from .execution import AutonomousExecutionLoop, AutonomousExecutionOutcome, ExecutionSubmitter
 from .intelligence import (
     AISignalModel,
     AISignalProposal,
@@ -29,4 +30,7 @@ __all__ = [
     "AutonomousRiskEngine",
     "AutonomousRiskPolicy",
     "AutonomousRiskResult",
+    "AutonomousExecutionLoop",
+    "AutonomousExecutionOutcome",
+    "ExecutionSubmitter",
 ]

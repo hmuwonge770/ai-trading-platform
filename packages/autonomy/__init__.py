@@ -25,6 +25,7 @@ from .reconciliation import AutonomousTestnetReconciler, ExchangeSnapshot, Expec
 from .risk import AutonomousRiskEngine, AutonomousRiskPolicy, AutonomousRiskResult
 from .testnet import BinanceTestnetExecutionSubmitter, TestnetExecutionPolicy, TestnetExecutionTransport
 from .testnet_runner import AutonomousTestnetRunner, TestnetRunOutcome
+from .incident_lifecycle import Incident, IncidentLifecycle, IncidentSeverity, IncidentStatus, IncidentStore
 
 __all__ = [
     "AlertDeliveryReport", "AlertDeliveryStatus", "DeliveryAlertSeverity", "AutonomousAlertDelivery", "OperationalAlert", "OperationalAlertSink",
@@ -51,4 +52,5 @@ __all__ = [
     "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy", "TestnetExecutionTransport", "AutonomousTestnetRunner",
     "TestnetRunOutcome", "AutonomousTestnetReconciler", "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder",
     "ReconciliationPolicy", "ReconciliationResult", "ReconciliationStatus", "TestnetStateProvider",
+    "Incident", "IncidentLifecycle", "IncidentSeverity", "IncidentStatus", "IncidentStore",
 ]

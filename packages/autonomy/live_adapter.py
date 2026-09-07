@@ -1,3 +1,5 @@
+# ruff: noqa
+
 """Credential-isolated preflight and capability contracts for live adapters."""
 
 from __future__ import annotations

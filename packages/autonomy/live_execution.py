@@ -13,6 +13,7 @@ from typing import Protocol
 
 from packages.autonomy.control import AutonomousControl, AutonomousMode
 from packages.autonomy.risk import AutonomousRiskResult
+from packages.promotion.domain import LIVE_STAGES
 from packages.trading.paper import OrderIntent
 
 from .authorization_consumption import LiveExecutionAuthorization
@@ -65,6 +66,8 @@ class AutonomousLiveExecutionBoundary:
             reasons.append("control_mode_not_live")
         if not control.can_run():
             reasons.append("autonomous_control_not_runnable")
+        if authorization.environment not in LIVE_STAGES:
+            reasons.append("authorization_environment_not_live")
         if not authorization.authorization_hash:
             reasons.append("authorization_hash_missing")
         if order is not None:

@@ -55,7 +55,7 @@ __all__ = [
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance", "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",
     "AutonomousPaperRunner", "PaperRunOutcome", "AutonomousTestnetPerformanceMonitor", "ExecutionObservation", "PerformancePolicy", "PerformanceReport", "PerformanceStatus", "AutonomousPromotionReadinessGate", "PromotionEvidence", "PromotionReadinessPolicy", "PromotionReadinessReport", "PromotionReadinessStatus", "AutonomousPromotionWorkflowIntegration", "PromotionEvidenceBinding", "PromotionHandoffStatus",
     "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy", "TestnetExecutionTransport", "AutonomousTestnetRunner", "TestnetRunOutcome", "AutonomousTestnetReconciler", "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder", "ReconciliationPolicy", "ReconciliationResult", "ReconciliationStatus", "TestnetStateProvider",
-    "Incident", "IncidentLifecycle", "IncidentSeverity", "IncidentStore", "AutonomousOrderLifecycleRecovery", "OrderLifecycleState", "OrderRecoveryAction", "OrderRecoveryEvent", "OrderRecoveryPolicy", "OrderRecoveryReport",
+    "Incident", "IncidentLifecycle", "IncidentSeverity", "IncidentStatus", "IncidentStore", "AutonomousOrderLifecycleRecovery", "OrderLifecycleState", "OrderRecoveryAction", "OrderRecoveryEvent", "OrderRecoveryPolicy", "OrderRecoveryReport",
     "AutonomousDisasterRecovery", "DisasterRecoveryPolicy", "DisasterRecoveryReport", "RecoveryCheckpoint", "RecoverySnapshot", "RecoveryStatus", "DisasterRecoveryAction",
     "AutonomousStrategyLifecycle", "StrategyLifecycleAction", "StrategyLifecyclePolicy", "StrategyLifecycleReport", "StrategyLifecycleState",
 ]

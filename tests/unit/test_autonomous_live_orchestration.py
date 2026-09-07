@@ -6,16 +6,13 @@ from packages.autonomy.control import AutonomousControl, AutonomousMode, Autonom
 from packages.autonomy.live_adapter import LiveAdapterPreflightContext
 from packages.autonomy.live_execution import LiveExecutionReport, LiveExecutionStatus
 from packages.autonomy.live_orchestration import AutonomousLiveRuntimeOrchestrator, LiveOrchestrationStatus
-from packages.autonomy.live_runtime import LiveRuntimeConfig, LiveRuntimeMode
+from packages.autonomy.live_runtime import AutonomousLiveRuntimeGuard, LiveRuntimeConfig, LiveRuntimeMode
 
 
 def _control() -> AutonomousControl:
     return AutonomousControl(
-        mode=AutonomousMode.LIVE,
-        state=AutonomousState.RUNNING,
-        trading_enabled=True,
-        kill_switch_enabled=False,
-        circuit_breaker_open=False,
+        mode=AutonomousMode.LIVE, state=AutonomousState.RUNNING,
+        trading_enabled=True, kill_switch_enabled=False, circuit_breaker_open=False,
     )
 
 
@@ -25,10 +22,8 @@ def _authorization(status=AuthorizationConsumptionStatus.AUTHORIZED):
 
 def _adapter() -> LiveAdapterPreflightContext:
     return LiveAdapterPreflightContext(
-        endpoint="https://api.binance.com",
-        credential_reference="secret/live/binance",
-        account_enabled=True,
-        healthcheck_passed=True,
+        endpoint="https://api.binance.com", credential_reference="secret/live/binance",
+        account_enabled=True, healthcheck_passed=True,
     )
 
 
@@ -36,13 +31,15 @@ def _risk() -> SimpleNamespace:
     return SimpleNamespace(approved=True, order=SimpleNamespace(client_order_id="client-1"))
 
 
+def _orchestrator(boundary: Mock) -> AutonomousLiveRuntimeOrchestrator:
+    return AutonomousLiveRuntimeOrchestrator(
+        runtime_guard=AutonomousLiveRuntimeGuard(), execution_boundary=boundary,
+    )
+
+
 def test_disabled_runtime_never_reaches_execution_boundary():
     boundary = Mock()
-    orchestrator = AutonomousLiveRuntimeOrchestrator(
-        runtime_guard=__import__("packages.autonomy.live_runtime", fromlist=["AutonomousLiveRuntimeGuard"]).AutonomousLiveRuntimeGuard(),
-        execution_boundary=boundary,
-    )
-    report = orchestrator.execute(
+    report = _orchestrator(boundary).execute(
         config=LiveRuntimeConfig(), control=_control(), authorization=_authorization(),
         authorization_snapshot=object(), risk_result=_risk(), adapter=_adapter(),
     )
@@ -52,9 +49,11 @@ def test_disabled_runtime_never_reaches_execution_boundary():
 
 def test_preflight_and_dry_run_never_submit():
     boundary = Mock()
-    guard = __import__("packages.autonomy.live_runtime", fromlist=["AutonomousLiveRuntimeGuard"]).AutonomousLiveRuntimeGuard()
-    orchestrator = AutonomousLiveRuntimeOrchestrator(runtime_guard=guard, execution_boundary=boundary)
-    for mode, expected in ((LiveRuntimeMode.PREFLIGHT, LiveOrchestrationStatus.PREFLIGHT), (LiveRuntimeMode.DRY_RUN, LiveOrchestrationStatus.DRY_RUN)):
+    orchestrator = _orchestrator(boundary)
+    for mode, expected in (
+        (LiveRuntimeMode.PREFLIGHT, LiveOrchestrationStatus.PREFLIGHT),
+        (LiveRuntimeMode.DRY_RUN, LiveOrchestrationStatus.DRY_RUN),
+    ):
         report = orchestrator.execute(
             config=LiveRuntimeConfig(mode=mode), control=_control(), authorization=_authorization(),
             authorization_snapshot=object(), risk_result=_risk(), adapter=_adapter(),
@@ -65,9 +64,7 @@ def test_preflight_and_dry_run_never_submit():
 
 def test_authorization_failure_never_submits():
     boundary = Mock()
-    from packages.autonomy.live_runtime import AutonomousLiveRuntimeGuard
-    orchestrator = AutonomousLiveRuntimeOrchestrator(runtime_guard=AutonomousLiveRuntimeGuard(), execution_boundary=boundary)
-    report = orchestrator.execute(
+    report = _orchestrator(boundary).execute(
         config=LiveRuntimeConfig(mode=LiveRuntimeMode.ENABLED, execution_enabled=True, kill_switch=False),
         control=_control(), authorization=_authorization(AuthorizationConsumptionStatus.BLOCKED),
         authorization_snapshot=object(), risk_result=_risk(), adapter=_adapter(),
@@ -77,10 +74,11 @@ def test_authorization_failure_never_submits():
 
 
 def test_enabled_runtime_delegates_exactly_once():
-    from packages.autonomy.live_runtime import AutonomousLiveRuntimeGuard
     boundary = Mock()
-    boundary.submit.return_value = LiveExecutionReport(LiveExecutionStatus.SUBMITTED, "client-1", {"ok": True}, ())
-    orchestrator = AutonomousLiveRuntimeOrchestrator(runtime_guard=AutonomousLiveRuntimeGuard(), execution_boundary=boundary)
+    boundary.submit.return_value = LiveExecutionReport(
+        LiveExecutionStatus.SUBMITTED, "client-1", {"ok": True}, (),
+    )
+    orchestrator = _orchestrator(boundary)
     snapshot = object()
     risk = _risk()
     report = orchestrator.execute(
@@ -89,14 +87,14 @@ def test_enabled_runtime_delegates_exactly_once():
         risk_result=risk, adapter=_adapter(),
     )
     assert report.status is LiveOrchestrationStatus.SUBMITTED
-    boundary.submit.assert_called_once_with(authorization=snapshot, risk_result=risk, control=_control())
+    boundary.submit.assert_called_once_with(
+        authorization=snapshot, risk_result=risk, control=_control(),
+    )
 
 
 def test_enabled_runtime_requires_authorization_snapshot():
-    from packages.autonomy.live_runtime import AutonomousLiveRuntimeGuard
     boundary = Mock()
-    orchestrator = AutonomousLiveRuntimeOrchestrator(runtime_guard=AutonomousLiveRuntimeGuard(), execution_boundary=boundary)
-    report = orchestrator.execute(
+    report = _orchestrator(boundary).execute(
         config=LiveRuntimeConfig(mode=LiveRuntimeMode.ENABLED, execution_enabled=True, kill_switch=False),
         control=_control(), authorization=_authorization(), authorization_snapshot=None,
         risk_result=_risk(), adapter=_adapter(),

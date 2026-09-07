@@ -14,6 +14,13 @@ from .intelligence import (
 from .learning import DriftAssessment, LearningAction, LearningPolicy, StrategyLearningEngine, StrategyPerformance
 from .loop import AutonomousSignalLoop, MarketEvent
 from .paper_runner import AutonomousPaperRunner, PaperRunOutcome
+from .performance import (
+    AutonomousTestnetPerformanceMonitor,
+    ExecutionObservation,
+    PerformancePolicy,
+    PerformanceReport,
+    PerformanceStatus,
+)
 from .positions import AutonomousPositionAgent, ManagedPosition, PositionAction, PositionDecision, PositionPolicy
 from .recovery import AutonomousRecoveryEngine, RecoveryAction, RecoveryDecision, RecoveryEvent, RecoveryPolicy, RecoveryState
 from .reconciliation import (
@@ -38,8 +45,9 @@ __all__ = [
     "AutonomousPositionAgent", "ManagedPosition", "PositionAction", "PositionDecision", "PositionPolicy",
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance",
     "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",
-    "AutonomousPaperRunner", "PaperRunOutcome", "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy",
-    "TestnetExecutionTransport", "AutonomousTestnetRunner", "TestnetRunOutcome", "AutonomousTestnetReconciler",
-    "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder", "ReconciliationPolicy", "ReconciliationResult",
-    "ReconciliationStatus", "TestnetStateProvider",
+    "AutonomousPaperRunner", "PaperRunOutcome", "AutonomousTestnetPerformanceMonitor", "ExecutionObservation",
+    "PerformancePolicy", "PerformanceReport", "PerformanceStatus", "BinanceTestnetExecutionSubmitter",
+    "TestnetExecutionPolicy", "TestnetExecutionTransport", "AutonomousTestnetRunner", "TestnetRunOutcome",
+    "AutonomousTestnetReconciler", "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder", "ReconciliationPolicy",
+    "ReconciliationResult", "ReconciliationStatus", "TestnetStateProvider",
 ]

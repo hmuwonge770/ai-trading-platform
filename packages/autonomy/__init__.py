@@ -11,6 +11,7 @@ from .intelligence import (
     RegimeAssessment,
 )
 from .loop import AutonomousSignalLoop, MarketEvent
+from .risk import AutonomousRiskEngine, AutonomousRiskPolicy, AutonomousRiskResult
 
 __all__ = [
     "AutonomousControl",
@@ -25,4 +26,7 @@ __all__ = [
     "IntelligencePolicy",
     "MarketRegime",
     "RegimeAssessment",
+    "AutonomousRiskEngine",
+    "AutonomousRiskPolicy",
+    "AutonomousRiskResult",
 ]

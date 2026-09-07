@@ -11,6 +11,7 @@ from typing import Protocol
 class CoordinationStatus(StrEnum):
     ACQUIRED = "acquired"
     HELD = "held"
+    RELEASED = "released"
     EXPIRED = "expired"
     CONFLICT = "conflict"
     UNAVAILABLE = "unavailable"
@@ -100,10 +101,10 @@ class AutonomousInstanceCoordinator:
         try:
             released = self.store.release(lease, now)
         except (OSError, ValueError, RuntimeError):
-            return CoordinationReport(CoordinationStatus.UNAVAILABLE, reason="coordination_unavailable")
-        return CoordinationReport(CoordinationStatus.EXPIRED if not released else CoordinationStatus.CONFLICT,
-                                  lease=lease,
-                                  reason="lease_not_owned" if not released else "released")
+            return CoordinationReport(CoordinationStatus.UNAVAILABLE, lease=lease, reason="coordination_unavailable")
+        if released:
+            return CoordinationReport(CoordinationStatus.RELEASED, lease=lease)
+        return CoordinationReport(CoordinationStatus.CONFLICT, lease=lease, reason="lease_not_owned")
 
     def can_act(self, lease: CoordinationLease, *, now: int) -> bool:
         try:

@@ -12,8 +12,9 @@ from enum import StrEnum
 
 from .authorization_consumption import AuthorizationConsumptionReport, LiveExecutionAuthorization
 from .control import AutonomousControl
+from .live_adapter import LiveAdapterPreflightContext
 from .live_execution import AutonomousLiveExecutionBoundary, LiveExecutionReport, LiveExecutionStatus
-from .live_runtime import LiveAdapterPreflightContext, LiveRuntimeConfig, LiveRuntimeMode, AutonomousLiveRuntimeGuard
+from .live_runtime import AutonomousLiveRuntimeGuard, LiveRuntimeConfig, LiveRuntimeMode, LiveRuntimeReport
 from .risk import AutonomousRiskResult
 
 
@@ -27,7 +28,7 @@ class LiveOrchestrationStatus(StrEnum):
 @dataclass(frozen=True, slots=True)
 class LiveOrchestrationReport:
     status: LiveOrchestrationStatus
-    runtime: object
+    runtime: LiveRuntimeReport
     execution: LiveExecutionReport | None
     reasons: tuple[str, ...]
 
@@ -60,26 +61,11 @@ class AutonomousLiveRuntimeOrchestrator:
     ) -> LiveOrchestrationReport:
         runtime = self._runtime_guard.assess(config, control, authorization, adapter)
         if config.mode is LiveRuntimeMode.PREFLIGHT:
-            return LiveOrchestrationReport(
-                LiveOrchestrationStatus.PREFLIGHT,
-                runtime,
-                None,
-                runtime.reasons,
-            )
+            return LiveOrchestrationReport(LiveOrchestrationStatus.PREFLIGHT, runtime, None, runtime.reasons)
         if config.mode is LiveRuntimeMode.DRY_RUN:
-            return LiveOrchestrationReport(
-                LiveOrchestrationStatus.DRY_RUN,
-                runtime,
-                None,
-                runtime.reasons,
-            )
+            return LiveOrchestrationReport(LiveOrchestrationStatus.DRY_RUN, runtime, None, runtime.reasons)
         if not runtime.submit_allowed:
-            return LiveOrchestrationReport(
-                LiveOrchestrationStatus.BLOCKED,
-                runtime,
-                None,
-                runtime.reasons,
-            )
+            return LiveOrchestrationReport(LiveOrchestrationStatus.BLOCKED, runtime, None, runtime.reasons)
         if authorization_snapshot is None:
             return LiveOrchestrationReport(
                 LiveOrchestrationStatus.BLOCKED,

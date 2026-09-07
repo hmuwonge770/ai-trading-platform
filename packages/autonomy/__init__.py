@@ -9,6 +9,7 @@ from .intelligence import AISignalModel, AISignalProposal, AutonomousMarketIntel
 from .learning import DriftAssessment, LearningAction, LearningPolicy, StrategyLearningEngine, StrategyPerformance
 from .live_adapter import AutonomousLiveAdapterPreflight, LiveAdapterPolicy, LiveAdapterPreflightContext, LiveAdapterPreflightReport, LiveAdapterStatus, LiveExchangeTransport
 from .live_execution import AutonomousLiveExecutionBoundary, LiveExecutionReport, LiveExecutionStatus, LiveExecutionSubmitter
+from .live_runtime import AutonomousLiveRuntimeGuard, LiveRuntimeConfig, LiveRuntimeMode, LiveRuntimeReport
 from .loop import AutonomousSignalLoop, MarketEvent
 from .paper_runner import AutonomousPaperRunner, PaperRunOutcome
 from .performance import AutonomousTestnetPerformanceMonitor, ExecutionObservation, PerformancePolicy, PerformanceReport, PerformanceStatus
@@ -31,6 +32,7 @@ __all__ = [
     "AutonomousRiskResult", "AutonomousExecutionLoop", "AutonomousExecutionOutcome", "ExecutionSubmitter",
     "AutonomousLiveExecutionBoundary", "LiveExecutionReport", "LiveExecutionStatus", "LiveExecutionSubmitter",
     "AutonomousLiveAdapterPreflight", "LiveAdapterPolicy", "LiveAdapterPreflightContext", "LiveAdapterPreflightReport", "LiveAdapterStatus", "LiveExchangeTransport",
+    "AutonomousLiveRuntimeGuard", "LiveRuntimeConfig", "LiveRuntimeMode", "LiveRuntimeReport",
     "AutonomousPositionAgent", "ManagedPosition", "PositionAction", "PositionDecision", "PositionPolicy",
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance",
     "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",

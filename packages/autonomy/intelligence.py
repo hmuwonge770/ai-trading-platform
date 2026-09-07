@@ -120,9 +120,9 @@ class AutonomousMarketIntelligence:
             return self._hold(snapshot, "AI signal has expired")
         if proposal.confidence < self.policy.min_confidence:
             return self._hold(snapshot, "AI signal confidence is below the threshold")
-        if proposal.action is DecisionAction.BUY and regime is MarketRegime.TREND_DOWN:
+        if proposal.action == DecisionAction.BUY and regime.regime == MarketRegime.TREND_DOWN:
             return self._hold(snapshot, "AI BUY conflicts with the detected downtrend")
-        if proposal.action is DecisionAction.SELL and regime is MarketRegime.TREND_UP:
+        if proposal.action == DecisionAction.SELL and regime.regime == MarketRegime.TREND_UP:
             return self._hold(snapshot, "AI SELL conflicts with the detected uptrend")
 
         return Decision(
@@ -146,7 +146,7 @@ class AutonomousMarketIntelligence:
             raise ValueError("AI signal cannot be issued in the future")
         if now - proposal.issued_at > self.policy.max_signal_age_seconds:
             raise ValueError("AI signal is too old")
-        if proposal.action not in DecisionAction:
+        if not isinstance(proposal.action, DecisionAction):
             raise ValueError("unsupported AI decision action")
         if regime.regime is MarketRegime.UNKNOWN:
             raise ValueError("unknown market regime")

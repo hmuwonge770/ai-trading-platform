@@ -33,6 +33,8 @@ class ExecutionObservation:
             raise ValueError("prices must be positive")
         if self.expected_quantity <= 0 or self.filled_quantity < 0:
             raise ValueError("quantities are invalid")
+        if self.filled_quantity > self.expected_quantity:
+            raise ValueError("filled quantity must not exceed expected quantity")
         if self.submitted_at <= 0 or self.completed_at < self.submitted_at:
             raise ValueError("execution timestamps are invalid")
 

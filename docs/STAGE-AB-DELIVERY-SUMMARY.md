@@ -1,0 +1,1 @@
+Stage AB provides a transport-neutral alert delivery boundary. Alerts are immutable, delivery is injected, duplicate notifications are bounded and suppressed, and failed delivery remains isolated from autonomous execution.

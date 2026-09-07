@@ -1,5 +1,17 @@
 """Autonomous trading control-plane primitives."""
 
+from .accounting import (
+    AccountingPolicy,
+    AccountingResult,
+    AccountingSnapshot,
+    AccountingStatus,
+    AutonomousTestnetAccountingReconciler,
+    ExpectedBalance,
+    ExpectedPosition,
+    ObservedBalance,
+    ObservedPosition,
+    TestnetAccountingProvider,
+)
 from .control import AutonomousControl, AutonomousMode, AutonomousState
 from .execution import AutonomousExecutionLoop, AutonomousExecutionOutcome, ExecutionSubmitter
 from .intelligence import (
@@ -31,6 +43,9 @@ from .testnet import BinanceTestnetExecutionSubmitter, TestnetExecutionPolicy, T
 from .testnet_runner import AutonomousTestnetRunner, TestnetRunOutcome
 
 __all__ = [
+    "AccountingPolicy", "AccountingResult", "AccountingSnapshot", "AccountingStatus",
+    "AutonomousTestnetAccountingReconciler", "ExpectedBalance", "ExpectedPosition",
+    "ObservedBalance", "ObservedPosition", "TestnetAccountingProvider",
     "AutonomousControl", "AutonomousMode", "AutonomousState", "AutonomousSignalLoop", "MarketEvent",
     "AISignalModel", "AISignalProposal", "AutonomousMarketIntelligence", "DeterministicRegimeDetector",
     "IntelligencePolicy", "MarketRegime", "RegimeAssessment", "AutonomousRiskEngine", "AutonomousRiskPolicy",

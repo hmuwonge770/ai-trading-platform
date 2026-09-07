@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import StrEnum
 
@@ -43,7 +44,7 @@ class AutonomousLiveRuntimeOrchestrator:
         runtime_guard: AutonomousLiveRuntimeGuard,
         execution_boundary: AutonomousLiveExecutionBoundary,
         audit_sink: ExecutionAuditSink | None = None,
-        clock: callable | None = None,
+        clock: Callable[[], int] | None = None,
     ) -> None:
         self._runtime_guard = runtime_guard
         self._execution_boundary = execution_boundary

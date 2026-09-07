@@ -1,5 +1,6 @@
 """Autonomous trading control-plane primitives."""
 
+from .authorization_freshness import AutonomousAuthorizationFreshnessGuard, AuthorizationFreshnessContext, AuthorizationFreshnessReport, AuthorizationFreshnessStatus
 from .authorization_preflight import AuthorizationPreflightReport, AuthorizationPreflightStatus, AutonomousLiveAuthorizationPreflight
 from .control import AutonomousControl, AutonomousMode, AutonomousState
 from .execution import AutonomousExecutionLoop, AutonomousExecutionOutcome, ExecutionSubmitter
@@ -18,6 +19,7 @@ from .testnet import BinanceTestnetExecutionSubmitter, TestnetExecutionPolicy, T
 from .testnet_runner import AutonomousTestnetRunner, TestnetRunOutcome
 
 __all__ = [
+    "AuthorizationFreshnessContext", "AuthorizationFreshnessReport", "AuthorizationFreshnessStatus", "AutonomousAuthorizationFreshnessGuard",
     "AuthorizationPreflightReport", "AuthorizationPreflightStatus", "AutonomousLiveAuthorizationPreflight",
     "AutonomousControl", "AutonomousMode", "AutonomousState", "AutonomousSignalLoop", "MarketEvent",
     "AISignalModel", "AISignalProposal", "AutonomousMarketIntelligence", "DeterministicRegimeDetector",

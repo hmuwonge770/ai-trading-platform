@@ -1,0 +1,1 @@
+The delivery implementation uses an injected sink and a bounded recent dedupe-key set. Successful delivery records the key; failed delivery does not, preserving retryability without coupling notification behavior to trading execution.

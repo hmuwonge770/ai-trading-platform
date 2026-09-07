@@ -52,3 +52,8 @@ def test_no_observations_are_unavailable() -> None:
 def test_invalid_observation_is_rejected() -> None:
     with pytest.raises(ValueError):
         observation(fill_price="0")
+
+
+def test_overfill_is_rejected() -> None:
+    with pytest.raises(ValueError):
+        observation(filled_quantity="1.1")

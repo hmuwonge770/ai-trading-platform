@@ -21,6 +21,7 @@ from .paper_runner import AutonomousPaperRunner, PaperRunOutcome
 from .performance import AutonomousTestnetPerformanceMonitor, ExecutionObservation, PerformancePolicy, PerformanceReport, PerformanceStatus
 from .positions import AutonomousPositionAgent, ManagedPosition, PositionAction, PositionDecision, PositionPolicy
 from .position_recovery import AutonomousPositionRecovery, ExpectedPosition, ObservedPosition, PositionRecoveryAction, PositionRecoveryPolicy, PositionRecoveryReport, PositionRecoveryStatus
+from .persistent_state import AutonomousPersistentState, AutonomousStateSnapshot, InMemoryPersistentStateStore, JsonFilePersistentStateStore, PersistentStatePolicy, PersistentStateReport, PersistentStateStatus, PersistentStateStore
 from .promotion import AutonomousPromotionReadinessGate, PromotionEvidence, PromotionReadinessPolicy, PromotionReadinessReport, PromotionReadinessStatus
 from .promotion_integration import AutonomousPromotionWorkflowIntegration, PromotionEvidenceBinding, PromotionHandoffStatus
 from .recovery import AutonomousRecoveryEngine, RecoveryAction, RecoveryDecision, RecoveryEvent, RecoveryPolicy, RecoveryState
@@ -50,6 +51,7 @@ __all__ = [
     "AlertSeverity", "AutonomousExecutionMonitor", "MonitoringAlert", "MonitoringAlertSink", "MonitoringPolicy", "MonitoringReport", "MonitoringStatus", "RuntimeHealthSnapshot",
     "AutonomousPositionAgent", "ManagedPosition", "PositionAction", "PositionDecision", "PositionPolicy",
     "AutonomousPositionRecovery", "ExpectedPosition", "ObservedPosition", "PositionRecoveryAction", "PositionRecoveryPolicy", "PositionRecoveryReport", "PositionRecoveryStatus",
+    "AutonomousPersistentState", "AutonomousStateSnapshot", "InMemoryPersistentStateStore", "JsonFilePersistentStateStore", "PersistentStatePolicy", "PersistentStateReport", "PersistentStateStatus", "PersistentStateStore",
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance",
     "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",
     "AutonomousPaperRunner", "PaperRunOutcome", "AutonomousTestnetPerformanceMonitor", "ExecutionObservation",

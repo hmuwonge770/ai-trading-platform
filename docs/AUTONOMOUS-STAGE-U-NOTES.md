@@ -1,0 +1,1 @@
+Stage U is a contract boundary, not a live-trading activation. It requires explicit live control state, immutable human-derived authorization, deterministic risk approval, and a supplied execution capability. Exchange credentials and exchange-specific transport remain outside this package.

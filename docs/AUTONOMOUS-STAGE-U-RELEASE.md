@@ -1,0 +1,1 @@
+Stage U release scope: deterministic live execution boundary only. No live exchange integration, no credential handling, no authorization mutation, no capital mutation, and no bypass of existing risk or recovery controls.

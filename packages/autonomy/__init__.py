@@ -12,6 +12,7 @@ from .live_execution import AutonomousLiveExecutionBoundary, LiveExecutionReport
 from .live_orchestration import AutonomousLiveRuntimeOrchestrator, LiveOrchestrationReport, LiveOrchestrationStatus
 from .live_runtime import AutonomousLiveRuntimeGuard, LiveRuntimeConfig, LiveRuntimeMode, LiveRuntimeReport
 from .loop import AutonomousSignalLoop, MarketEvent
+from .observability import ExecutionAuditEvent, ExecutionAuditSink, ExecutionAuditStatus
 from .paper_runner import AutonomousPaperRunner, PaperRunOutcome
 from .performance import AutonomousTestnetPerformanceMonitor, ExecutionObservation, PerformancePolicy, PerformanceReport, PerformanceStatus
 from .positions import AutonomousPositionAgent, ManagedPosition, PositionAction, PositionDecision, PositionPolicy
@@ -35,6 +36,7 @@ __all__ = [
     "AutonomousLiveAdapterPreflight", "LiveAdapterPolicy", "LiveAdapterPreflightContext", "LiveAdapterPreflightReport", "LiveAdapterStatus", "LiveExchangeTransport",
     "AutonomousLiveRuntimeGuard", "LiveRuntimeConfig", "LiveRuntimeMode", "LiveRuntimeReport",
     "AutonomousLiveRuntimeOrchestrator", "LiveOrchestrationReport", "LiveOrchestrationStatus",
+    "ExecutionAuditEvent", "ExecutionAuditSink", "ExecutionAuditStatus",
     "AutonomousPositionAgent", "ManagedPosition", "PositionAction", "PositionDecision", "PositionPolicy",
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance",
     "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",

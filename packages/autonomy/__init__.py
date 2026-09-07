@@ -4,6 +4,7 @@ from .alert_delivery import AlertDeliveryReport, AlertDeliveryStatus, AlertSever
 from .authorization_consumption import AutonomousLiveAuthorizationConsumer, AuthorizationConsumptionReport, AuthorizationConsumptionStatus, LiveExecutionAuthorization
 from .authorization_freshness import AutonomousAuthorizationFreshnessGuard, AuthorizationFreshnessContext, AuthorizationFreshnessReport, AuthorizationFreshnessStatus
 from .authorization_preflight import AuthorizationPreflightReport, AuthorizationPreflightStatus, AutonomousLiveAuthorizationPreflight
+from .connectivity import AutonomousConnectivityMonitor, ConnectivityPolicy, ConnectivityProbe, ConnectivityReport, ConnectivityState
 from .control import AutonomousControl, AutonomousMode, AutonomousState
 from .execution import AutonomousExecutionLoop, AutonomousExecutionOutcome, ExecutionSubmitter
 from .health_state import AutonomousHealthStateMachine, AutonomousHealthState, HealthObservation, HealthStatePolicy, HealthStateReport
@@ -33,6 +34,7 @@ __all__ = [
     "AutonomousLiveAuthorizationConsumer", "AuthorizationConsumptionReport", "AuthorizationConsumptionStatus", "LiveExecutionAuthorization",
     "AuthorizationFreshnessContext", "AuthorizationFreshnessReport", "AuthorizationFreshnessStatus", "AutonomousAuthorizationFreshnessGuard",
     "AuthorizationPreflightReport", "AuthorizationPreflightStatus", "AutonomousLiveAuthorizationPreflight",
+    "AutonomousConnectivityMonitor", "ConnectivityPolicy", "ConnectivityProbe", "ConnectivityReport", "ConnectivityState",
     "AutonomousControl", "AutonomousMode", "AutonomousState", "AutonomousSignalLoop", "MarketEvent",
     "AutonomousHealthStateMachine", "AutonomousHealthState", "HealthObservation", "HealthStatePolicy", "HealthStateReport",
     "AISignalModel", "AISignalProposal", "AutonomousMarketIntelligence", "DeterministicRegimeDetector",

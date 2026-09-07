@@ -22,6 +22,13 @@ from .performance import (
     PerformanceStatus,
 )
 from .positions import AutonomousPositionAgent, ManagedPosition, PositionAction, PositionDecision, PositionPolicy
+from .promotion import (
+    AutonomousPromotionReadinessGate,
+    PromotionEvidence,
+    PromotionReadinessPolicy,
+    PromotionReadinessReport,
+    PromotionReadinessStatus,
+)
 from .recovery import AutonomousRecoveryEngine, RecoveryAction, RecoveryDecision, RecoveryEvent, RecoveryPolicy, RecoveryState
 from .reconciliation import (
     AutonomousTestnetReconciler,
@@ -46,8 +53,9 @@ __all__ = [
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance",
     "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",
     "AutonomousPaperRunner", "PaperRunOutcome", "AutonomousTestnetPerformanceMonitor", "ExecutionObservation",
-    "PerformancePolicy", "PerformanceReport", "PerformanceStatus", "BinanceTestnetExecutionSubmitter",
-    "TestnetExecutionPolicy", "TestnetExecutionTransport", "AutonomousTestnetRunner", "TestnetRunOutcome",
-    "AutonomousTestnetReconciler", "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder", "ReconciliationPolicy",
-    "ReconciliationResult", "ReconciliationStatus", "TestnetStateProvider",
+    "PerformancePolicy", "PerformanceReport", "PerformanceStatus", "AutonomousPromotionReadinessGate",
+    "PromotionEvidence", "PromotionReadinessPolicy", "PromotionReadinessReport", "PromotionReadinessStatus",
+    "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy", "TestnetExecutionTransport", "AutonomousTestnetRunner",
+    "TestnetRunOutcome", "AutonomousTestnetReconciler", "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder",
+    "ReconciliationPolicy", "ReconciliationResult", "ReconciliationStatus", "TestnetStateProvider",
 ]

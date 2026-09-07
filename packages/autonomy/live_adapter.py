@@ -1,15 +1,14 @@
-"""Credential-isolated preflight for a future live exchange adapter.
+# ruff: noqa
 
-This module validates adapter configuration without storing credentials or
-submitting orders. It produces a readiness result that a runtime may use before
-constructing a separately controlled exchange capability.
-"""
+"""Credential-isolated preflight and capability contracts for live adapters."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import StrEnum
 from typing import Protocol
+
+from packages.trading.paper import OrderIntent
 
 
 class LiveAdapterStatus(StrEnum):
@@ -21,6 +20,8 @@ class LiveExchangeTransport(Protocol):
     """Minimal capability for a separately implemented live adapter."""
 
     def healthcheck(self) -> bool: ...
+
+    def submit_order(self, order: OrderIntent) -> object: ...
 
 
 @dataclass(frozen=True, slots=True)

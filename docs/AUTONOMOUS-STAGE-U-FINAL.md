@@ -1,0 +1,1 @@
+Stage U is implemented as a fail-closed handoff boundary. It never directly talks to Binance, never owns credentials, and only delegates an already risk-approved order when an immutable live authorization and runnable LIVE control state are present.

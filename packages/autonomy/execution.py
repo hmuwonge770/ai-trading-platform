@@ -8,8 +8,8 @@ credentials or exchange client of its own.
 from __future__ import annotations
 
 from collections import deque
-from collections.abc import Protocol
 from dataclasses import dataclass
+from typing import Protocol
 
 from packages.autonomy.risk import AutonomousRiskResult
 from packages.execution.service import ExecutionResult

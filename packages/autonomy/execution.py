@@ -8,17 +8,24 @@ credentials or exchange client of its own.
 from __future__ import annotations
 
 from collections import deque
+from collections.abc import Protocol
 from dataclasses import dataclass
-from collections.abc import Callable
 
 from packages.autonomy.risk import AutonomousRiskResult
 from packages.execution.service import ExecutionResult
+from packages.risk.gateway import RiskDecision
 from packages.strategies.models import MarketBar
+from packages.trading.paper import OrderIntent
 
 
-class ExecutionSubmitter:
-    def submit(self, order, risk_decision, candle: MarketBar) -> ExecutionResult:
-        raise NotImplementedError
+class ExecutionSubmitter(Protocol):
+    def submit(
+        self,
+        order: OrderIntent,
+        risk_decision: RiskDecision,
+        candle: MarketBar,
+    ) -> ExecutionResult:
+        ...
 
 
 @dataclass(frozen=True, slots=True)

@@ -32,6 +32,8 @@ from .testnet import BinanceTestnetExecutionSubmitter, TestnetExecutionPolicy, T
 from .testnet_runner import AutonomousTestnetRunner, TestnetRunOutcome
 from .incident_lifecycle import Incident, IncidentLifecycle, IncidentSeverity, IncidentStatus, IncidentStore
 from .order_recovery import AutonomousOrderLifecycleRecovery, OrderLifecycleState, OrderRecoveryAction, OrderRecoveryEvent, OrderRecoveryPolicy, OrderRecoveryReport
+from .disaster_recovery import AutonomousDisasterRecovery, DisasterRecoveryPolicy, DisasterRecoveryReport, RecoveryCheckpoint, RecoverySnapshot, RecoveryStatus, RecoveryAction as DisasterRecoveryAction
+from .strategy_lifecycle import AutonomousStrategyLifecycle, StrategyLifecycleAction, StrategyLifecyclePolicy, StrategyLifecycleReport, StrategyLifecycleState
 
 __all__ = [
     "AutonomousInstanceCoordinator", "CoordinationLease", "CoordinationReport", "CoordinationStatus", "CoordinationStore", "InMemoryCoordinationStore",
@@ -53,5 +55,7 @@ __all__ = [
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance", "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",
     "AutonomousPaperRunner", "PaperRunOutcome", "AutonomousTestnetPerformanceMonitor", "ExecutionObservation", "PerformancePolicy", "PerformanceReport", "PerformanceStatus", "AutonomousPromotionReadinessGate", "PromotionEvidence", "PromotionReadinessPolicy", "PromotionReadinessReport", "PromotionReadinessStatus", "AutonomousPromotionWorkflowIntegration", "PromotionEvidenceBinding", "PromotionHandoffStatus",
     "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy", "TestnetExecutionTransport", "AutonomousTestnetRunner", "TestnetRunOutcome", "AutonomousTestnetReconciler", "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder", "ReconciliationPolicy", "ReconciliationResult", "ReconciliationStatus", "TestnetStateProvider",
-    "Incident", "IncidentLifecycle", "IncidentSeverity", "IncidentStatus", "IncidentStore", "AutonomousOrderLifecycleRecovery", "OrderLifecycleState", "OrderRecoveryAction", "OrderRecoveryEvent", "OrderRecoveryPolicy", "OrderRecoveryReport",
+    "Incident", "IncidentLifecycle", "IncidentSeverity", "IncidentStore", "AutonomousOrderLifecycleRecovery", "OrderLifecycleState", "OrderRecoveryAction", "OrderRecoveryEvent", "OrderRecoveryPolicy", "OrderRecoveryReport",
+    "AutonomousDisasterRecovery", "DisasterRecoveryPolicy", "DisasterRecoveryReport", "RecoveryCheckpoint", "RecoverySnapshot", "RecoveryStatus", "DisasterRecoveryAction",
+    "AutonomousStrategyLifecycle", "StrategyLifecycleAction", "StrategyLifecyclePolicy", "StrategyLifecycleReport", "StrategyLifecycleState",
 ]

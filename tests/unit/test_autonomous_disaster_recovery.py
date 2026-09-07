@@ -4,7 +4,6 @@ import pytest
 
 from packages.autonomy.disaster_recovery import (
     AutonomousDisasterRecovery,
-    DisasterRecoveryPolicy,
     RecoveryCheckpoint,
     RecoverySnapshot,
     RecoveryStatus,

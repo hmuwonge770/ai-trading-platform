@@ -18,6 +18,7 @@ Market Data
   -> Strategy Selection
   -> Autonomous Signal Decision
   -> Deterministic Risk Gate
+  -> Authorization / Policy Gates
   -> Autonomous Execution
   -> Exchange Events
   -> Reconciliation
@@ -25,50 +26,114 @@ Market Data
   -> Performance / Drift Evaluation
   -> Learning / Strategy Review
   -> Strategy Promotion or Retirement
+  -> Monitoring / Alerting
+  -> Recovery / Incident Handling
   -> repeat
 ```
 
 ## Development stages
 
-### Autonomous Stage A — Autonomous Trading Control Plane
+The roadmap is intentionally staged through **Stage AZ**. Stage AZ is the completion milestone for the current autonomous-trading program: the platform can operate the complete bounded autonomous lifecycle in production. It is **not** a claim of profitability or an unrestricted AI trading agent.
 
-Introduce an explicit autonomous operating mode, decision-cycle state, policy boundaries, decision records, and kill-switch/circuit-breaker integration. Autonomous mode must default to disabled and fail closed.
+### Foundation — Stages A–J
 
-### Autonomous Stage B — Continuous Market Intelligence
+- **Stage A — Autonomous Trading Control Plane:** explicit autonomous modes, state machine, policy boundaries, kill switch, and circuit breaker. Default disabled and fail closed.
+- **Stage B — Continuous Market Intelligence:** continuous market observation, feature generation, regime detection, freshness checks, and signal context.
+- **Stage C — AI Decision Engine:** typed AI trade decisions constrained to approved strategy specifications.
+- **Stage D — Autonomous Risk Engine:** deterministic position, exposure, loss, drawdown, order-rate, liquidity, freshness, and portfolio controls.
+- **Stage E — Autonomous Execution Loop:** risk-gated decision-to-order flow with idempotency and execution safeguards.
+- **Stage F — Position & Portfolio Agent:** autonomous exits, stops, take-profit handling, stale-order handling, and bounded exposure management.
+- **Stage G — Continuous Strategy Learning:** performance and drift evaluation without silently mutating active strategy versions.
+- **Stage H — Autonomous Promotion:** policy-based strategy progression with deterministic capital and risk ceilings.
+- **Stage I — Autonomous Reliability & Recovery:** reconnect/recovery workflows, outage handling, reconciliation, stale decision expiry, and safe shutdown.
+- **Stage J — Production Autonomous Mode:** enable production autonomy only after all required evidence and safety gates pass.
 
-Build continuous market observation, feature generation, market-regime detection, data freshness checks, and signal context snapshots.
+### Controlled Testnet — Stages K–O
 
-### Autonomous Stage C — AI Decision Engine
+- **Stage K — Binance Testnet Execution:** controlled exchange integration using Testnet only.
+- **Stage L — Testnet Autonomous Runner:** controlled orchestration of autonomous Testnet execution.
+- **Stage M — Testnet Reconciliation & State Recovery:** reconcile exchange state and fail closed on unknown or inconsistent state.
+- **Stage N — Testnet Accounting Integrity:** reconcile balances and positions against expected state.
+- **Stage O — Testnet Performance Attribution:** measure fills, slippage, fill rate, and execution quality without mutating trading state.
 
-Allow the AI to select from approved strategy versions and produce typed trade decisions with confidence, rationale, evidence references, and expiry. The AI cannot create arbitrary executable trading code or bypass deterministic controls.
+### Promotion & Authorization — Stages P–T
 
-### Autonomous Stage D — Autonomous Risk Engine
+- **Stage P — Promotion Readiness:** deterministic readiness assessment using reconciliation, accounting, performance, and recovery evidence.
+- **Stage Q — Promotion Evidence Handoff:** immutable evidence binding between autonomous assessment and the promotion workflow.
+- **Stage R — Live Authorization Preflight:** verify a pending live promotion before independent human authorization.
+- **Stage S — Authorization Freshness & Expiry:** enforce authorization expiry and immutable evidence/policy consistency.
+- **Stage T — Authorization Consumption Guard:** create the final immutable handoff consumed by the live execution path; no approval or activation occurs here.
 
-Connect every AI decision to deterministic position, exposure, loss, drawdown, order-rate, liquidity, freshness, and portfolio constraints. Risk rejection is final.
+### Live Execution Foundation — Stages U–Y
 
-### Autonomous Stage E — Autonomous Execution Loop
+- **Stage U — Live Execution Boundary:** require valid authorization, deterministic risk approval, LIVE control state, and matching strategy identity before submission.
+- **Stage V — Credential-Isolated Adapter Preflight:** validate production endpoint, credential reference, account state, and adapter health without exposing secrets to autonomy.
+- **Stage W — Credential-Isolated Live Adapter:** controlled production Binance execution through an isolated adapter.
+- **Stage X — Live Runtime Controls:** explicit runtime modes, execution enablement, and kill-switch enforcement.
+- **Stage Y — Live Runtime Orchestration:** compose runtime controls and the live execution boundary without bypassing existing gates.
 
-Create the continuously running decision-to-order loop using the existing execution abstraction, idempotency, outbox, exchange events, reconciliation, and accounting safeguards.
+### Observability & Operations — Stages Z–AB
 
-### Autonomous Stage F — Position & Portfolio Agent
+- **Stage Z — Execution Observability & Audit Trail:** immutable, secret-free execution events and append-only audit records.
+- **Stage AA — Execution Monitoring & Alerting:** deterministic health monitoring for authorization, adapter, reconciliation, accounting, kill-switch, repeated blocks, and duplicate suppression.
+- **Stage AB — Operational Alert Delivery:** credential-free notification delivery with bounded duplicate suppression and isolated delivery failures.
 
-Enable autonomous position maintenance: exits, stops, take-profit handling, stale-order cleanup, exposure balancing, and portfolio-level decisions, all bounded by deterministic policy.
+### Production Hardening — Stages AC–AY
 
-### Autonomous Stage G — Continuous Strategy Learning
+- **Stage AC — Durable Alert & Incident Lifecycle:** persist operational alerts, incidents, acknowledgements, escalation state, and resolution history.
+- **Stage AD — Autonomous Health State Machine:** aggregate execution, exchange, reconciliation, accounting, authorization, and infrastructure health into deterministic operational states.
+- **Stage AE — Exchange Connectivity Resilience:** bounded reconnects, timeout handling, rate-limit handling, and exchange outage detection.
+- **Stage AF — Order Lifecycle Recovery:** recover submitted, partially filled, filled, cancelled, rejected, and unknown orders safely and idempotently.
+- **Stage AG — Position Recovery:** reconstruct and validate positions after restart, disconnect, or partial state loss before dependent actions continue.
+- **Stage AH — Persistent Autonomous State:** durable checkpoints for decisions, execution state, recovery state, and lifecycle progress.
+- **Stage AI — Multi-Instance Safety:** distributed idempotency, ownership/leases, duplicate-run prevention, and concurrency controls.
+- **Stage AJ — Disaster Recovery:** backup, restore, recovery-point objectives, recovery-time objectives, and controlled restart procedures.
+- **Stage AK — Strategy Lifecycle Automation:** formal candidate, validation, active, degraded, retired, and archived strategy states.
+- **Stage AL — Automated Strategy Evaluation:** continuous candidate evaluation against deterministic evidence and minimum sample requirements.
+- **Stage AM — Strategy Retirement Automation:** automatically quarantine or retire strategies only under explicit deterministic policy; never silently alter immutable versions.
+- **Stage AN — Capital Allocation Governance:** deterministic capital ceilings, allocation rules, portfolio concentration limits, and independent enforcement.
+- **Stage AO — Risk Policy Governance:** versioned risk policies, policy fingerprints, change controls, and prevention of unauthorized policy weakening.
+- **Stage AP — Autonomous Promotion Governance:** controlled automated promotion for eligible non-live stages while preserving mandatory human authorization for protected live transitions.
+- **Stage AQ — Production Canary:** restricted production deployment with bounded capital, symbols, order rates, and explicit rollback conditions.
+- **Stage AR — Production Soak & Evidence:** long-running production observation proving stability, reconciliation integrity, execution quality, and recovery behavior.
+- **Stage AS — Autonomous Incident Response:** deterministic incident classification, safe degradation, position protection, escalation, and recovery workflows.
+- **Stage AT — Operational SLOs & Capacity:** latency, availability, reconciliation freshness, execution quality, queue health, resource limits, and capacity alerts.
+- **Stage AU — Security Hardening:** secret isolation, least privilege, dependency/security scanning, hardened runtime configuration, and audit review.
+- **Stage AV — End-to-End Failure Testing:** controlled testing of exchange outages, stale data, duplicate events, process crashes, network failures, reconciliation mismatches, and authorization expiry.
+- **Stage AW — Production Readiness Review:** independent verification that all technical, security, operational, recovery, and governance gates are satisfied.
+- **Stage AX — Controlled Production Expansion:** expand from canary to limited production within deterministic capital and risk ceilings.
+- **Stage AY — Full Autonomous Lifecycle Validation:** verify that observation, decision, risk, execution, reconciliation, accounting, learning, promotion, monitoring, and recovery operate continuously as one bounded lifecycle.
 
-Evaluate live performance and drift, compare against expected behavior, retire degraded strategies, and generate replacement candidates. Learning must not silently mutate an active strategy version.
+### Completion — Stage AZ
 
-### Autonomous Stage H — Autonomous Promotion
+**Stage AZ — Fully Autonomous Production Operation**
 
-Replace manual promotion as the normal operating path with policy-based automated promotion between research, paper, testnet, canary, limited, and live stages. Capital and risk ceilings remain deterministic.
+Stage AZ is the final completion milestone for this roadmap. The platform operates the complete autonomous lifecycle continuously in production while remaining bounded by deterministic controls and immutable governance.
 
-### Autonomous Stage I — Autonomous Reliability & Recovery
+AZ requires all of the following to be true:
 
-Add process supervision, reconnect/recovery workflows, exchange outage handling, reconciliation loops, state repair, stale decision expiry, and autonomous safe shutdown.
+- market observation and AI strategy intelligence operate continuously;
+- every decision passes deterministic risk controls;
+- live execution remains behind explicit authorization and runtime gates;
+- credentials remain isolated from the AI/autonomy decision plane;
+- exchange, order, position, accounting, and strategy state are reconciled;
+- execution quality and strategy drift are continuously evaluated;
+- degraded strategies can be quarantined or retired under deterministic policy;
+- capital and risk ceilings cannot be increased by the AI decision plane;
+- monitoring, alerting, incident handling, and recovery operate continuously;
+- state survives restarts and multi-instance execution is idempotent;
+- disaster recovery and failure-mode testing have passed;
+- production canary and soak evidence have passed;
+- operational SLOs and security controls have passed;
+- the complete lifecycle has been validated end-to-end.
 
-### Autonomous Stage J — Production Autonomous Mode
+**AZ does not mean unrestricted autonomy.** The AI cannot bypass risk, disable safety controls, obtain raw exchange credentials, arbitrarily modify executable code, or change capital/risk ceilings. The system remains fail closed, auditable, reversible where possible, and subject to hard global shutdown controls.
 
-Enable autonomous live operation only when all autonomous-specific evidence, reliability, risk, security, and recovery gates pass.
+## Completion criteria
+
+The autonomous program is considered complete only when **Stage AZ** has been implemented, tested, reviewed, deployed through controlled production stages, and its end-to-end lifecycle has passed the required operational evidence gates.
+
+Passing the engineering roadmap does **not** establish profitability. Trading performance remains an empirical property that must be measured continuously in production under the system's risk limits.
 
 ## Non-negotiable boundaries
 
@@ -85,6 +150,6 @@ Enable autonomous live operation only when all autonomous-specific evidence, rel
 - Autonomous mode must have a hard global disable control.
 - The system must be able to safely stop opening new positions while continuing reconciliation and exit management where policy permits.
 
-## First implementation target
+## Current implementation position
 
-The first implementation on this branch is **Autonomous Stage A — Autonomous Trading Control Plane**. It establishes the state machine and policy boundary before any autonomous order generation is enabled.
+The roadmap is implemented incrementally. Each stage must be implemented, tested, pass CI, merged to `main`, and have post-merge CI verified before the next stage is treated as complete. Live capability must never be inferred merely because the code path exists; runtime configuration, authorization, policy, and operational evidence remain mandatory.

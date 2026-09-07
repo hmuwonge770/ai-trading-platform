@@ -17,6 +17,7 @@ from .paper_runner import AutonomousPaperRunner, PaperRunOutcome
 from .positions import AutonomousPositionAgent, ManagedPosition, PositionAction, PositionDecision, PositionPolicy
 from .recovery import AutonomousRecoveryEngine, RecoveryAction, RecoveryDecision, RecoveryEvent, RecoveryPolicy, RecoveryState
 from .risk import AutonomousRiskEngine, AutonomousRiskPolicy, AutonomousRiskResult
+from .testnet import BinanceTestnetExecutionSubmitter, TestnetExecutionPolicy, TestnetExecutionTransport
 
 __all__ = [
     "AutonomousControl", "AutonomousMode", "AutonomousState", "AutonomousSignalLoop", "MarketEvent",
@@ -26,5 +27,6 @@ __all__ = [
     "AutonomousPositionAgent", "ManagedPosition", "PositionAction", "PositionDecision", "PositionPolicy",
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance",
     "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",
-    "AutonomousPaperRunner", "PaperRunOutcome",
+    "AutonomousPaperRunner", "PaperRunOutcome", "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy",
+    "TestnetExecutionTransport",
 ]

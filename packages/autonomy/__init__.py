@@ -1,5 +1,6 @@
 """Autonomous trading control-plane primitives."""
 
+from .alert_delivery import AlertDeliveryReport, AlertDeliveryStatus, AlertSeverity as DeliveryAlertSeverity, AutonomousAlertDelivery, OperationalAlert, OperationalAlertSink
 from .authorization_consumption import AutonomousLiveAuthorizationConsumer, AuthorizationConsumptionReport, AuthorizationConsumptionStatus, LiveExecutionAuthorization
 from .authorization_freshness import AutonomousAuthorizationFreshnessGuard, AuthorizationFreshnessContext, AuthorizationFreshnessReport, AuthorizationFreshnessStatus
 from .authorization_preflight import AuthorizationPreflightReport, AuthorizationPreflightStatus, AutonomousLiveAuthorizationPreflight
@@ -26,6 +27,7 @@ from .testnet import BinanceTestnetExecutionSubmitter, TestnetExecutionPolicy, T
 from .testnet_runner import AutonomousTestnetRunner, TestnetRunOutcome
 
 __all__ = [
+    "AlertDeliveryReport", "AlertDeliveryStatus", "DeliveryAlertSeverity", "AutonomousAlertDelivery", "OperationalAlert", "OperationalAlertSink",
     "AutonomousLiveAuthorizationConsumer", "AuthorizationConsumptionReport", "AuthorizationConsumptionStatus", "LiveExecutionAuthorization",
     "AuthorizationFreshnessContext", "AuthorizationFreshnessReport", "AuthorizationFreshnessStatus", "AutonomousAuthorizationFreshnessGuard",
     "AuthorizationPreflightReport", "AuthorizationPreflightStatus", "AutonomousLiveAuthorizationPreflight",

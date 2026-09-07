@@ -1,5 +1,6 @@
 """Autonomous trading control-plane primitives."""
 
+from .multi_instance import AutonomousInstanceCoordinator, CoordinationLease, CoordinationReport, CoordinationStatus, CoordinationStore, InMemoryCoordinationStore
 from .alert_delivery import AlertDeliveryReport, AlertDeliveryStatus, AlertSeverity as DeliveryAlertSeverity, AutonomousAlertDelivery, OperationalAlert, OperationalAlertSink
 from .authorization_consumption import AutonomousLiveAuthorizationConsumer, AuthorizationConsumptionReport, AuthorizationConsumptionStatus, LiveExecutionAuthorization
 from .authorization_freshness import AutonomousAuthorizationFreshnessGuard, AuthorizationFreshnessContext, AuthorizationFreshnessReport, AuthorizationFreshnessStatus
@@ -33,6 +34,7 @@ from .incident_lifecycle import Incident, IncidentLifecycle, IncidentSeverity, I
 from .order_recovery import AutonomousOrderLifecycleRecovery, OrderLifecycleState, OrderRecoveryAction, OrderRecoveryEvent, OrderRecoveryPolicy, OrderRecoveryReport
 
 __all__ = [
+    "AutonomousInstanceCoordinator", "CoordinationLease", "CoordinationReport", "CoordinationStatus", "CoordinationStore", "InMemoryCoordinationStore",
     "AlertDeliveryReport", "AlertDeliveryStatus", "DeliveryAlertSeverity", "AutonomousAlertDelivery", "OperationalAlert", "OperationalAlertSink",
     "AutonomousLiveAuthorizationConsumer", "AuthorizationConsumptionReport", "AuthorizationConsumptionStatus", "LiveExecutionAuthorization",
     "AuthorizationFreshnessContext", "AuthorizationFreshnessReport", "AuthorizationFreshnessStatus", "AutonomousAuthorizationFreshnessGuard",
@@ -40,27 +42,16 @@ __all__ = [
     "AutonomousConnectivityMonitor", "ConnectivityPolicy", "ConnectivityProbe", "ConnectivityReport", "ConnectivityState",
     "AutonomousControl", "AutonomousMode", "AutonomousState", "AutonomousSignalLoop", "MarketEvent",
     "AutonomousHealthStateMachine", "AutonomousHealthState", "HealthObservation", "HealthStatePolicy", "HealthStateReport",
-    "AISignalModel", "AISignalProposal", "AutonomousMarketIntelligence", "DeterministicRegimeDetector",
-    "IntelligencePolicy", "MarketRegime", "RegimeAssessment", "AutonomousRiskEngine", "AutonomousRiskPolicy",
-    "AutonomousRiskResult", "AutonomousExecutionLoop", "AutonomousExecutionOutcome", "ExecutionSubmitter",
+    "AISignalModel", "AISignalProposal", "AutonomousMarketIntelligence", "DeterministicRegimeDetector", "IntelligencePolicy", "MarketRegime", "RegimeAssessment",
+    "AutonomousRiskEngine", "AutonomousRiskPolicy", "AutonomousRiskResult", "AutonomousExecutionLoop", "AutonomousExecutionOutcome", "ExecutionSubmitter",
     "AutonomousLiveExecutionBoundary", "LiveExecutionReport", "LiveExecutionStatus", "LiveExecutionSubmitter",
     "AutonomousLiveAdapterPreflight", "LiveAdapterPolicy", "LiveAdapterPreflightContext", "LiveAdapterPreflightReport", "LiveAdapterStatus", "LiveExchangeTransport",
-    "AutonomousLiveRuntimeGuard", "LiveRuntimeConfig", "LiveRuntimeMode", "LiveRuntimeReport",
-    "AutonomousLiveRuntimeOrchestrator", "LiveOrchestrationReport", "LiveOrchestrationStatus",
-    "ExecutionAuditEvent", "ExecutionAuditSink", "ExecutionAuditStatus",
-    "AlertSeverity", "AutonomousExecutionMonitor", "MonitoringAlert", "MonitoringAlertSink", "MonitoringPolicy", "MonitoringReport", "MonitoringStatus", "RuntimeHealthSnapshot",
-    "AutonomousPositionAgent", "ManagedPosition", "PositionAction", "PositionDecision", "PositionPolicy",
-    "AutonomousPositionRecovery", "ExpectedPosition", "ObservedPosition", "PositionRecoveryAction", "PositionRecoveryPolicy", "PositionRecoveryReport", "PositionRecoveryStatus",
+    "AutonomousLiveRuntimeGuard", "LiveRuntimeConfig", "LiveRuntimeMode", "LiveRuntimeReport", "AutonomousLiveRuntimeOrchestrator", "LiveOrchestrationReport", "LiveOrchestrationStatus",
+    "ExecutionAuditEvent", "ExecutionAuditSink", "ExecutionAuditStatus", "AlertSeverity", "AutonomousExecutionMonitor", "MonitoringAlert", "MonitoringAlertSink", "MonitoringPolicy", "MonitoringReport", "MonitoringStatus", "RuntimeHealthSnapshot",
+    "AutonomousPositionAgent", "ManagedPosition", "PositionAction", "PositionDecision", "PositionPolicy", "AutonomousPositionRecovery", "ExpectedPosition", "ObservedPosition", "PositionRecoveryAction", "PositionRecoveryPolicy", "PositionRecoveryReport", "PositionRecoveryStatus",
     "AutonomousPersistentState", "AutonomousStateSnapshot", "InMemoryPersistentStateStore", "JsonFilePersistentStateStore", "PersistentStatePolicy", "PersistentStateReport", "PersistentStateStatus", "PersistentStateStore",
-    "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance",
-    "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",
-    "AutonomousPaperRunner", "PaperRunOutcome", "AutonomousTestnetPerformanceMonitor", "ExecutionObservation",
-    "PerformancePolicy", "PerformanceReport", "PerformanceStatus", "AutonomousPromotionReadinessGate",
-    "PromotionEvidence", "PromotionReadinessPolicy", "PromotionReadinessReport", "PromotionReadinessStatus",
-    "AutonomousPromotionWorkflowIntegration", "PromotionEvidenceBinding", "PromotionHandoffStatus",
-    "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy", "TestnetExecutionTransport", "AutonomousTestnetRunner",
-    "TestnetRunOutcome", "AutonomousTestnetReconciler", "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder",
-    "ReconciliationPolicy", "ReconciliationResult", "ReconciliationStatus", "TestnetStateProvider",
-    "Incident", "IncidentLifecycle", "IncidentSeverity", "IncidentStatus", "IncidentStore",
-    "AutonomousOrderLifecycleRecovery", "OrderLifecycleState", "OrderRecoveryAction", "OrderRecoveryEvent", "OrderRecoveryPolicy", "OrderRecoveryReport",
+    "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance", "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",
+    "AutonomousPaperRunner", "PaperRunOutcome", "AutonomousTestnetPerformanceMonitor", "ExecutionObservation", "PerformancePolicy", "PerformanceReport", "PerformanceStatus", "AutonomousPromotionReadinessGate", "PromotionEvidence", "PromotionReadinessPolicy", "PromotionReadinessReport", "PromotionReadinessStatus", "AutonomousPromotionWorkflowIntegration", "PromotionEvidenceBinding", "PromotionHandoffStatus",
+    "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy", "TestnetExecutionTransport", "AutonomousTestnetRunner", "TestnetRunOutcome", "AutonomousTestnetReconciler", "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder", "ReconciliationPolicy", "ReconciliationResult", "ReconciliationStatus", "TestnetStateProvider",
+    "Incident", "IncidentLifecycle", "IncidentSeverity", "IncidentStatus", "IncidentStore", "AutonomousOrderLifecycleRecovery", "OrderLifecycleState", "OrderRecoveryAction", "OrderRecoveryEvent", "OrderRecoveryPolicy", "OrderRecoveryReport",
 ]

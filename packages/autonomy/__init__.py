@@ -34,6 +34,7 @@ from .incident_lifecycle import Incident, IncidentLifecycle, IncidentSeverity, I
 from .order_recovery import AutonomousOrderLifecycleRecovery, OrderLifecycleState, OrderRecoveryAction, OrderRecoveryEvent, OrderRecoveryPolicy, OrderRecoveryReport
 from .disaster_recovery import AutonomousDisasterRecovery, DisasterRecoveryPolicy, DisasterRecoveryReport, RecoveryCheckpoint, RecoverySnapshot, RecoveryStatus, RecoveryAction as DisasterRecoveryAction
 from .strategy_lifecycle import AutonomousStrategyLifecycle, StrategyLifecycleAction, StrategyLifecyclePolicy, StrategyLifecycleReport, StrategyLifecycleState
+from .strategy_evaluation import AutonomousStrategyEvaluator, StrategyEvaluationAction, StrategyEvaluationPolicy, StrategyEvaluationReport, StrategyEvaluationStatus
 
 __all__ = [
     "AutonomousInstanceCoordinator", "CoordinationLease", "CoordinationReport", "CoordinationStatus", "CoordinationStore", "InMemoryCoordinationStore",
@@ -58,4 +59,5 @@ __all__ = [
     "Incident", "IncidentLifecycle", "IncidentSeverity", "IncidentStatus", "IncidentStore", "AutonomousOrderLifecycleRecovery", "OrderLifecycleState", "OrderRecoveryAction", "OrderRecoveryEvent", "OrderRecoveryPolicy", "OrderRecoveryReport",
     "AutonomousDisasterRecovery", "DisasterRecoveryPolicy", "DisasterRecoveryReport", "RecoveryCheckpoint", "RecoverySnapshot", "RecoveryStatus", "DisasterRecoveryAction",
     "AutonomousStrategyLifecycle", "StrategyLifecycleAction", "StrategyLifecyclePolicy", "StrategyLifecycleReport", "StrategyLifecycleState",
+    "AutonomousStrategyEvaluator", "StrategyEvaluationAction", "StrategyEvaluationPolicy", "StrategyEvaluationReport", "StrategyEvaluationStatus",
 ]

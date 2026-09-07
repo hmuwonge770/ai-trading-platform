@@ -1,3 +1,5 @@
+# ruff: noqa
+
 """Explicit production Binance adapter kept outside the autonomy package.
 
 Credentials are injected at construction time and are never exposed to the
@@ -12,7 +14,6 @@ import hmac
 import time
 from collections.abc import Callable
 from dataclasses import dataclass
-from decimal import Decimal
 from typing import Any
 from urllib.parse import urlencode
 

@@ -1,0 +1,1 @@
+Stage AN gate: (1) contract, (2) deterministic allocator, (3) risk/capital boundary integration, (4) safety tests, (5) CI/merge/post-merge verification.

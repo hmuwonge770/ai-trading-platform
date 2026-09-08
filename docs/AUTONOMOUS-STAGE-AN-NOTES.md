@@ -1,0 +1,1 @@
+Stage AN safety note: autonomous allocation is a bounded planning decision. Approved capital ceilings remain external governance inputs; the allocator cannot raise them, and no allocation result has exchange execution authority.

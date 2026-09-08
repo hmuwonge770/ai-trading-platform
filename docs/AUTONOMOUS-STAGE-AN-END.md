@@ -1,0 +1,1 @@
+Stage AN implementation notes conclude here; CI and merge remain the only outstanding completion gate.

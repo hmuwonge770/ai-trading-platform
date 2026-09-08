@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import StrEnum
-from math import isfinite
 
 
 class IncidentResponseAction(StrEnum):
@@ -83,7 +82,6 @@ class AutonomousIncidentResponse:
     def evaluate(self, observation: IncidentObservation) -> IncidentResponseReport:
         reasons: list[str] = []
         critical = False
-
         if observation.kill_switch_enabled:
             reasons.append("kill_switch_enabled")
             critical = True
@@ -105,11 +103,11 @@ class AutonomousIncidentResponse:
         if observation.recovery_attempts >= self.policy.maximum_recovery_attempts and observation.recovery_attempts > 0:
             reasons.append("recovery_attempt_limit_reached")
             critical = True
+        if critical:
+            return IncidentResponseReport(observation.incident_id, observation.fingerprint, IncidentResponseAction.ABORT, False, tuple(reasons))
         if observation.repeated_count >= self.policy.repeated_incident_threshold:
             reasons.append("repeated_incident_threshold_reached")
             return IncidentResponseReport(observation.incident_id, observation.fingerprint, IncidentResponseAction.ESCALATE, True, tuple(reasons))
-        if critical:
-            return IncidentResponseReport(observation.incident_id, observation.fingerprint, IncidentResponseAction.ABORT, False, tuple(reasons))
         if observation.severity is IncidentResponseSeverity.CRITICAL:
             reasons.append("critical_incident")
             return IncidentResponseReport(observation.incident_id, observation.fingerprint, IncidentResponseAction.CONTAIN, True, tuple(reasons))

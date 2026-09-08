@@ -4,7 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .incident_response import AutonomousIncidentResponse, IncidentResponsePolicy, IncidentResponseReport
+from .incident_response import (
+    AutonomousIncidentResponse,
+    IncidentResponseAction,
+    IncidentResponsePolicy,
+    IncidentResponseReport,
+)
 from .incident_response_detection import AutonomousIncidentDetector, IncidentDetectionReport
 
 
@@ -64,6 +69,6 @@ class AutonomousIncidentResponseIntegration:
             evidence_complete=evidence_complete,
         )
         response = self.responder.evaluate(detection.observation)
-        if context.kill_switch_enabled and response.action is not response.action.ABORT:
+        if context.kill_switch_enabled and response.action is not IncidentResponseAction.ABORT:
             raise AssertionError("incident response cannot bypass an active kill switch")
         return IncidentResponseDecision(detection, response)

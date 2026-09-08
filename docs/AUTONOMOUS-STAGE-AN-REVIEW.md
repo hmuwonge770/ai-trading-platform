@@ -1,0 +1,1 @@
+Review gate: allocation outputs must remain bounded by externally supplied portfolio, strategy, and risk ceilings; no code path in this stage submits orders or changes those ceilings.

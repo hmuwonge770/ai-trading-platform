@@ -97,13 +97,14 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 - **AN — Capital Allocation Governance:** merged to `main`.
 - **AO — Risk Policy Governance:** merged to `main`; post-merge CI verified green.
 - **AP — Autonomous Promotion Governance:** merged to `main`; post-merge CI verified green.
-- **Next:** AQ — Production Canary.
+- **AQ — Production Canary:** merged to `main`; post-merge CI verified green.
+- **Next:** AR — Production Soak & Evidence.
 
-## Stage AP implementation phases
+## Stage AQ implementation phases
 
-1. Promotion contract & immutable eligibility invariants.
-2. Deterministic promotion evaluator.
-3. Governance integration with risk and capital boundaries.
+1. Canary contract & immutable safety invariants.
+2. Deterministic canary eligibility and rollout evaluator.
+3. Integration with live runtime and AP/AN/AO governance boundaries.
 4. Failure, boundary, concurrency & safety coverage.
 5. CI, merge & post-merge verification.
 

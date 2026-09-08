@@ -99,6 +99,7 @@ class AutonomousProductionSoakGovernance:
             reasons.append("slippage_exceeded")
 
         critical = {
+            "canary_not_completed",
             "promotion_governance_not_approved", "risk_governance_not_approved",
             "capital_governance_not_approved", "runtime_not_ready",
             "deployment_kill_switch_active", "reconciliation_failures_exceeded",

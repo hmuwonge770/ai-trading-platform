@@ -98,14 +98,15 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 - **AO — Risk Policy Governance:** merged to `main`; post-merge CI verified green.
 - **AP — Autonomous Promotion Governance:** merged to `main`; post-merge CI verified green.
 - **AQ — Production Canary:** merged to `main`; post-merge CI verified green.
-- **Next:** AR — Production Soak & Evidence.
+- **AR — Production Soak & Evidence:** merged to `main`; post-merge CI verified green.
+- **Next:** AS — Autonomous Incident Response.
 
-## Stage AQ implementation phases
+## Stage AR implementation phases
 
-1. Canary contract & immutable safety invariants.
-2. Deterministic canary eligibility and rollout evaluator.
-3. Integration with live runtime and AP/AN/AO governance boundaries.
-4. Failure, boundary, concurrency & safety coverage.
+1. Soak contract & immutable evidence model.
+2. Deterministic production-soak evaluator.
+3. Evidence integrity, freshness & upstream governance integration.
+4. Failure, threshold, concurrency & safety coverage.
 5. CI, merge & post-merge verification.
 
 ## Completion rule

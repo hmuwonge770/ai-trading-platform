@@ -1,0 +1,1 @@
+Stage AN final gate remains pending until CI, merge, and post-merge verification succeed.

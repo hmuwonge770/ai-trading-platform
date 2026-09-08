@@ -35,6 +35,7 @@ from .order_recovery import AutonomousOrderLifecycleRecovery, OrderLifecycleStat
 from .disaster_recovery import AutonomousDisasterRecovery, DisasterRecoveryPolicy, DisasterRecoveryReport, RecoveryCheckpoint, RecoverySnapshot, RecoveryStatus, RecoveryAction as DisasterRecoveryAction
 from .strategy_lifecycle import AutonomousStrategyLifecycle, StrategyLifecycleAction, StrategyLifecyclePolicy, StrategyLifecycleReport, StrategyLifecycleState
 from .strategy_evaluation import AutonomousStrategyEvaluator, StrategyEvaluationAction, StrategyEvaluationPolicy, StrategyEvaluationReport, StrategyEvaluationStatus
+from .strategy_retirement import AutonomousStrategyRetirement, StrategyRetirementAction, StrategyRetirementReport
 
 __all__ = [
     "AutonomousInstanceCoordinator", "CoordinationLease", "CoordinationReport", "CoordinationStatus", "CoordinationStore", "InMemoryCoordinationStore",
@@ -60,4 +61,5 @@ __all__ = [
     "AutonomousDisasterRecovery", "DisasterRecoveryPolicy", "DisasterRecoveryReport", "RecoveryCheckpoint", "RecoverySnapshot", "RecoveryStatus", "DisasterRecoveryAction",
     "AutonomousStrategyLifecycle", "StrategyLifecycleAction", "StrategyLifecyclePolicy", "StrategyLifecycleReport", "StrategyLifecycleState",
     "AutonomousStrategyEvaluator", "StrategyEvaluationAction", "StrategyEvaluationPolicy", "StrategyEvaluationReport", "StrategyEvaluationStatus",
+    "AutonomousStrategyRetirement", "StrategyRetirementAction", "StrategyRetirementReport",
 ]

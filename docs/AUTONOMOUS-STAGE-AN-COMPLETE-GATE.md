@@ -1,0 +1,1 @@
+Final Stage AN gate: CI green, PR merged to main, and post-merge CI verified.

@@ -1,0 +1,1 @@
+Stage AN CI gate: lint, Python tests, and Laravel dashboard tests must pass before merge; main must be verified after merge.

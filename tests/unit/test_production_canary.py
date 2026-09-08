@@ -17,7 +17,7 @@ STRATEGY_ID = UUID("12345678-1234-5678-1234-567812345678")
 def request(**overrides):
     values = dict(
         strategy_version_id=STRATEGY_ID,
-        requested_cohort_percent=Decimal("100"),
+        requested_cohort_percent=Decimal("1"),
         evidence_samples=100,
         observed_error_rate_percent=Decimal("0"),
         reconciliation_failures=0,
@@ -35,7 +35,11 @@ def request(**overrides):
 
 
 def test_ready_request_starts_when_assigned():
-    report = AutonomousProductionCanaryGovernance().evaluate(request())
+    policy = ProductionCanaryPolicy(max_cohort_percent=Decimal("1"))
+    strategy_id = UUID("00000000-0000-0000-0000-0000000000f0")
+    report = AutonomousProductionCanaryGovernance(policy=policy).evaluate(
+        request(strategy_version_id=strategy_id)
+    )
     assert report.action is ProductionCanaryAction.START
     assert report.should_start
     assert report.safe
@@ -90,8 +94,8 @@ def test_negative_and_non_finite_values_fail_closed():
 
 def test_cohort_assignment_is_deterministic():
     governance = AutonomousProductionCanaryGovernance()
-    first = governance.evaluate(request(requested_cohort_percent=Decimal("50")))
-    second = governance.evaluate(request(requested_cohort_percent=Decimal("50")))
+    first = governance.evaluate(request(requested_cohort_percent=Decimal("1")))
+    second = governance.evaluate(request(requested_cohort_percent=Decimal("1")))
     assert first == second
 
 

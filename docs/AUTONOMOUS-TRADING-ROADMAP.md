@@ -96,8 +96,8 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 
 - **AN — Capital Allocation Governance:** merged to `main`.
 - **AO — Risk Policy Governance:** merged to `main`; post-merge CI verified green.
-- **AP — Autonomous Promotion Governance:** implementation in progress across five phases; merge and post-merge verification are still required.
-- **Next:** complete AP CI/merge/post-merge verification, then begin AQ — Production Canary.
+- **AP — Autonomous Promotion Governance:** merged to `main`; post-merge CI verified green.
+- **Next:** AQ — Production Canary.
 
 ## Stage AP implementation phases
 

@@ -12,6 +12,10 @@ Add an explicit, deterministic governance boundary for autonomous risk policy. T
 4. **Failure & safety testing** — invalid, stale, non-finite, boundary, identity, and policy-conflict cases.
 5. **CI → merge → post-merge verification** — green CI, merge to `main`, and verify post-merge CI.
 
+## Dependency sequencing
+
+Stage AN is the prerequisite capital-allocation governance boundary. It must be present on `main` before AO is validated or merged. AO does not duplicate or copy Stage AN implementation; it consumes the merged AN contract as its lower-level capacity boundary.
+
 ## Non-negotiable invariants
 
 - Approved risk limits are external inputs and immutable during evaluation.
@@ -42,4 +46,4 @@ Tests cover policy validation, tighter bounds, exposure, identity, determinism, 
 
 ## Phase 5 gate
 
-CI must pass before merge. After merge, `main` and its workflow must be independently verified before Stage AO is considered complete.
+CI must pass against the current `main`, including the merged Stage AN dependency, before merge. After merge, `main` and its workflow must be independently verified before Stage AO is considered complete.

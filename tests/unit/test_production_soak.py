@@ -103,10 +103,10 @@ def test_insufficient_evidence_holds():
 
 
 def test_short_soak_holds():
-    item = evidence(ended_at=START + timedelta(hours=23))
-    item = replace(item, evidence_digest="0" * 64)
-    item = replace(item, evidence_digest=build_evidence_digest(item))
+    ended_at = START + timedelta(hours=23)
+    item = evidence(ended_at=ended_at, collected_at=ended_at + timedelta(minutes=1))
     assert evaluate(item).action is ProductionSoakAction.HOLD
+    assert "insufficient_soak_duration" in evaluate(item).reasons
 
 
 def test_identical_evaluations_are_deterministic():

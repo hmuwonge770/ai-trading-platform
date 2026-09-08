@@ -92,6 +92,12 @@ AZ requires continuous market intelligence and decisions, deterministic risk gat
 
 AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety controls, obtain raw exchange credentials, arbitrarily modify executable code, or change capital/risk ceilings. The system remains fail closed, auditable, and subject to hard global shutdown controls.
 
+## Current implementation status
+
+- **AN — Capital Allocation Governance:** merged to `main`.
+- **AO — Risk Policy Governance:** implementation complete through the four engineering phases; Phase 5 CI/merge/post-merge verification remains the completion gate.
+- **Next:** AP — Autonomous Promotion Governance.
+
 ## Completion rule
 
 Each stage must be implemented, tested, pass CI, merged to `main`, and have post-merge CI verified before the next stage is treated as complete. Live capability is never inferred merely because a code path exists; runtime configuration, authorization, policy, and operational evidence remain mandatory.

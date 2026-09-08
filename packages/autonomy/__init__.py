@@ -27,6 +27,8 @@ from .promotion import AutonomousPromotionReadinessGate, PromotionEvidence, Prom
 from .promotion_integration import AutonomousPromotionWorkflowIntegration, PromotionEvidenceBinding, PromotionHandoffStatus
 from .promotion_governance import AutonomousPromotionGovernance, PromotionGovernanceAction, PromotionGovernanceReport, PromotionGovernanceRequest
 from .promotion_governance_integration import AutonomousPromotionGovernanceIntegration, GovernedPromotionReport
+from .production_canary import AutonomousProductionCanaryGovernance, ProductionCanaryAction, ProductionCanaryPolicy, ProductionCanaryReport, ProductionCanaryRequest
+from .production_canary_integration import AutonomousProductionCanaryIntegration, ProductionCanaryGovernanceContext
 from .recovery import AutonomousRecoveryEngine, RecoveryAction, RecoveryDecision, RecoveryEvent, RecoveryPolicy, RecoveryState
 from .reconciliation import AutonomousTestnetReconciler, ExchangeSnapshot, ExpectedOrder, ObservedOrder, ReconciliationPolicy, ReconciliationResult, ReconciliationStatus, TestnetStateProvider
 from .risk import AutonomousRiskEngine, AutonomousRiskPolicy, AutonomousRiskResult
@@ -62,6 +64,7 @@ __all__ = [
     "AutonomousPersistentState", "AutonomousStateSnapshot", "InMemoryPersistentStateStore", "JsonFilePersistentStateStore", "PersistentStatePolicy", "PersistentStateReport", "PersistentStateStatus", "PersistentStateStore",
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance", "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",
     "AutonomousPaperRunner", "PaperRunOutcome", "AutonomousTestnetPerformanceMonitor", "ExecutionObservation", "PerformancePolicy", "PerformanceReport", "PerformanceStatus", "AutonomousPromotionReadinessGate", "PromotionEvidence", "PromotionReadinessPolicy", "PromotionReadinessReport", "PromotionReadinessStatus", "AutonomousPromotionWorkflowIntegration", "PromotionEvidenceBinding", "PromotionHandoffStatus", "AutonomousPromotionGovernance", "PromotionGovernanceAction", "PromotionGovernanceReport", "PromotionGovernanceRequest", "AutonomousPromotionGovernanceIntegration", "GovernedPromotionReport",
+    "AutonomousProductionCanaryGovernance", "ProductionCanaryAction", "ProductionCanaryPolicy", "ProductionCanaryReport", "ProductionCanaryRequest", "AutonomousProductionCanaryIntegration", "ProductionCanaryGovernanceContext",
     "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy", "TestnetExecutionTransport", "AutonomousTestnetRunner", "TestnetRunOutcome", "AutonomousTestnetReconciler", "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder", "ReconciliationPolicy", "ReconciliationResult", "ReconciliationStatus", "TestnetStateProvider",
     "AutonomousRiskPolicyGovernance", "RiskPolicy", "RiskPolicyReason", "RiskPolicyReport", "RiskPolicyRequest", "AutonomousCapitalRiskGovernance", "GovernedCapitalRiskReport",
     "Incident", "IncidentLifecycle", "IncidentSeverity", "IncidentStatus", "IncidentStore", "AutonomousOrderLifecycleRecovery", "OrderLifecycleState", "OrderRecoveryAction", "OrderRecoveryEvent", "OrderRecoveryPolicy", "OrderRecoveryReport",

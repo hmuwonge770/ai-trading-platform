@@ -42,7 +42,12 @@ def test_tightest_order_limit_wins():
 
 def test_existing_strategy_exposure_is_deducted():
     report = AutonomousRiskPolicyGovernance().evaluate(
-        policy(), request(existing_strategy_exposure=Decimal("350"), requested_notional=Decimal("100"))
+        policy(),
+        request(
+            existing_total_exposure=Decimal("350"),
+            existing_strategy_exposure=Decimal("350"),
+            requested_notional=Decimal("100"),
+        ),
     )
     assert report.approved_notional == Decimal("50")
 

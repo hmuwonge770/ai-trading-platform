@@ -1,0 +1,1 @@
+Merge gate for Stage AN: do not merge until required CI is green. Post-merge verification is required before proceeding to Stage AO.

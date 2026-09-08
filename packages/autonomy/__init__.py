@@ -28,6 +28,8 @@ from .promotion_integration import AutonomousPromotionWorkflowIntegration, Promo
 from .recovery import AutonomousRecoveryEngine, RecoveryAction, RecoveryDecision, RecoveryEvent, RecoveryPolicy, RecoveryState
 from .reconciliation import AutonomousTestnetReconciler, ExchangeSnapshot, ExpectedOrder, ObservedOrder, ReconciliationPolicy, ReconciliationResult, ReconciliationStatus, TestnetStateProvider
 from .risk import AutonomousRiskEngine, AutonomousRiskPolicy, AutonomousRiskResult
+from .risk_policy_governance import AutonomousRiskPolicyGovernance, RiskPolicy, RiskPolicyReason, RiskPolicyReport, RiskPolicyRequest
+from .risk_policy_governance_integration import AutonomousCapitalRiskGovernance, GovernedCapitalRiskReport
 from .testnet import BinanceTestnetExecutionSubmitter, TestnetExecutionPolicy, TestnetExecutionTransport
 from .testnet_runner import AutonomousTestnetRunner, TestnetRunOutcome
 from .incident_lifecycle import Incident, IncidentLifecycle, IncidentSeverity, IncidentStatus, IncidentStore
@@ -59,6 +61,7 @@ __all__ = [
     "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance", "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState",
     "AutonomousPaperRunner", "PaperRunOutcome", "AutonomousTestnetPerformanceMonitor", "ExecutionObservation", "PerformancePolicy", "PerformanceReport", "PerformanceStatus", "AutonomousPromotionReadinessGate", "PromotionEvidence", "PromotionReadinessPolicy", "PromotionReadinessReport", "PromotionReadinessStatus", "AutonomousPromotionWorkflowIntegration", "PromotionEvidenceBinding", "PromotionHandoffStatus",
     "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy", "TestnetExecutionTransport", "AutonomousTestnetRunner", "TestnetRunOutcome", "AutonomousTestnetReconciler", "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder", "ReconciliationPolicy", "ReconciliationResult", "ReconciliationStatus", "TestnetStateProvider",
+    "AutonomousRiskPolicyGovernance", "RiskPolicy", "RiskPolicyReason", "RiskPolicyReport", "RiskPolicyRequest", "AutonomousCapitalRiskGovernance", "GovernedCapitalRiskReport",
     "Incident", "IncidentLifecycle", "IncidentSeverity", "IncidentStatus", "IncidentStore", "AutonomousOrderLifecycleRecovery", "OrderLifecycleState", "OrderRecoveryAction", "OrderRecoveryEvent", "OrderRecoveryPolicy", "OrderRecoveryReport",
     "AutonomousDisasterRecovery", "DisasterRecoveryPolicy", "DisasterRecoveryReport", "RecoveryCheckpoint", "RecoverySnapshot", "RecoveryStatus", "DisasterRecoveryAction",
     "AutonomousStrategyLifecycle", "StrategyLifecycleAction", "StrategyLifecyclePolicy", "StrategyLifecycleReport", "StrategyLifecycleState",

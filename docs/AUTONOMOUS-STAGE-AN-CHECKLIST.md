@@ -1,0 +1,5 @@
+- [x] Allocation contract
+- [x] Deterministic allocator
+- [x] Risk ceiling governance adapter
+- [x] Safety and determinism tests
+- [ ] CI, merge, post-merge verification

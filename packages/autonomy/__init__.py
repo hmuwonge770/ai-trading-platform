@@ -37,6 +37,7 @@ from .strategy_lifecycle import AutonomousStrategyLifecycle, StrategyLifecycleAc
 from .strategy_evaluation import AutonomousStrategyEvaluator, StrategyEvaluationAction, StrategyEvaluationPolicy, StrategyEvaluationReport, StrategyEvaluationStatus
 from .strategy_retirement import AutonomousStrategyRetirement, StrategyRetirementAction, StrategyRetirementReport
 from .capital_allocation import AutonomousCapitalAllocator, CapitalAllocationReport, CapitalAllocationRequest
+from .capital_allocation_governance import AutonomousCapitalAllocationGovernance, CapitalGovernanceContext
 
 __all__ = [
     "AutonomousInstanceCoordinator", "CoordinationLease", "CoordinationReport", "CoordinationStatus", "CoordinationStore", "InMemoryCoordinationStore",
@@ -62,5 +63,5 @@ __all__ = [
     "AutonomousDisasterRecovery", "DisasterRecoveryPolicy", "DisasterRecoveryReport", "RecoveryCheckpoint", "RecoverySnapshot", "RecoveryStatus", "DisasterRecoveryAction",
     "AutonomousStrategyLifecycle", "StrategyLifecycleAction", "StrategyLifecyclePolicy", "StrategyLifecycleReport", "StrategyLifecycleState",
     "AutonomousStrategyEvaluator", "StrategyEvaluationAction", "StrategyEvaluationPolicy", "StrategyEvaluationReport", "StrategyEvaluationStatus",
-    "AutonomousStrategyRetirement", "StrategyRetirementAction", "StrategyRetirementReport", "AutonomousCapitalAllocator", "CapitalAllocationReport", "CapitalAllocationRequest",
+    "AutonomousStrategyRetirement", "StrategyRetirementAction", "StrategyRetirementReport", "AutonomousCapitalAllocator", "CapitalAllocationReport", "CapitalAllocationRequest", "AutonomousCapitalAllocationGovernance", "CapitalGovernanceContext",
 ]

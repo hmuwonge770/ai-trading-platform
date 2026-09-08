@@ -24,7 +24,7 @@ def evaluate(**context_overrides):
     return AutonomousProductionCanaryIntegration().evaluate(
         strategy_version_id=STRATEGY_ID,
         context=ProductionCanaryGovernanceContext(**values),
-        requested_cohort_percent=Decimal("100"),
+        requested_cohort_percent=Decimal("1"),
         evidence_samples=100,
         observed_error_rate_percent=Decimal("0"),
         reconciliation_failures=0,

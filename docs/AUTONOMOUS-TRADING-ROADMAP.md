@@ -95,8 +95,17 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 ## Current implementation status
 
 - **AN — Capital Allocation Governance:** merged to `main`.
-- **AO — Risk Policy Governance:** implementation complete through the four engineering phases; Phase 5 CI/merge/post-merge verification remains the completion gate.
-- **Next:** AP — Autonomous Promotion Governance.
+- **AO — Risk Policy Governance:** merged to `main`; post-merge CI verified green.
+- **AP — Autonomous Promotion Governance:** implementation in progress across five phases; merge and post-merge verification are still required.
+- **Next:** complete AP CI/merge/post-merge verification, then begin AQ — Production Canary.
+
+## Stage AP implementation phases
+
+1. Promotion contract & immutable eligibility invariants.
+2. Deterministic promotion evaluator.
+3. Governance integration with risk and capital boundaries.
+4. Failure, boundary, concurrency & safety coverage.
+5. CI, merge & post-merge verification.
 
 ## Completion rule
 

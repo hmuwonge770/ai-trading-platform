@@ -5,6 +5,7 @@ from .security_hardening import (
     SecurityAssessment,
     SecurityHardeningPolicy,
     SecurityObservation,
+    SecurityStatus,
     assess_security,
 )
 
@@ -24,5 +25,8 @@ class AutonomousSecurityHardeningIntegration:
 
     def assess(self, context: SecurityGovernanceContext) -> SecurityAssessment:
         if not context.strategy_id or not context.strategy_version:
-            return SecurityAssessment(status="blocked", reasons=("strategy_identity_missing",))
+            return SecurityAssessment(
+                status=SecurityStatus.BLOCKED,
+                reasons=("strategy_identity_missing",),
+            )
         return assess_security(self._policy, context.observation)

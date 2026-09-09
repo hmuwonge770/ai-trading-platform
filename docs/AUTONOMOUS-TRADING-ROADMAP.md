@@ -102,7 +102,8 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 - **AS — Autonomous Incident Response:** merged to `main`; post-merge CI verified green.
 - **AT — Operational SLOs & Capacity:** merged to `main`; post-merge CI verified green.
 - **AU — Security Hardening:** merged to `main`; post-merge CI verified green.
-- **Next:** AV — End-to-End Failure Testing.
+- **AV — End-to-End Failure Testing:** merged to `main`; merge commit `190161420ef60682f60099cc8689353f88ec17ac`; post-merge CI run `34326490542` verified green.
+- **Next:** AW — Production Readiness Review.
 
 ## Stage AT implementation phases
 
@@ -120,6 +121,15 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 3. Governance integration and strategy identity binding.
 4. Failure, boundary and determinism coverage.
 5. Package exports and documentation.
+
+## Stage AV implementation phases
+
+1. Failure contract and bounded response policy.
+2. Deterministic failure assessment.
+3. Governance integration and strategy identity binding.
+4. Boundary, failure and determinism coverage.
+5. Package exports and documentation.
+6. CI, merge and post-merge verification.
 
 ## Completion rule
 

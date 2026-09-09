@@ -1,5 +1,7 @@
 """Autonomous trading control-plane primitives."""
 
+from .end_to_end_failure_testing import FailureAssessment, FailureInjection, FailureResponse, FailureType, assess_failure
+from .end_to_end_failure_testing_integration import AutonomousEndToEndFailureGovernance, FailureGovernanceContext
 from .security_hardening import SecurityAssessment, SecurityHardeningPolicy, SecurityObservation, SecurityStatus, assess_security
 from .security_hardening_integration import AutonomousSecurityHardeningIntegration, SecurityGovernanceContext
 from .operational_slos import OperationalObservation, OperationalSLOPolicy, SLOStatus
@@ -58,6 +60,7 @@ from .capital_allocation import AutonomousCapitalAllocator, CapitalAllocationRep
 from .capital_allocation_governance import AutonomousCapitalAllocationGovernance, CapitalGovernanceContext
 
 __all__ = [
+    "FailureAssessment", "FailureInjection", "FailureResponse", "FailureType", "assess_failure", "AutonomousEndToEndFailureGovernance", "FailureGovernanceContext",
     "SecurityAssessment", "SecurityHardeningPolicy", "SecurityObservation", "SecurityStatus", "assess_security", "AutonomousSecurityHardeningIntegration", "SecurityGovernanceContext",
     "OperationalObservation", "OperationalSLOPolicy", "SLOStatus", "AutonomousOperationalSLOGovernance", "OperationalSLOReport", "AutonomousOperationalSLOIntegration", "OperationalGovernanceContext",
     "AutonomousIncidentResponse", "IncidentObservation", "IncidentResponseAction", "IncidentResponsePolicy", "IncidentResponseReport", "IncidentResponseSeverity", "AutonomousIncidentDetector", "IncidentDetectionReport", "IncidentSignal", "AutonomousIncidentResponseIntegration", "IncidentResponseContext", "IncidentResponseDecision", "IdempotentIncidentResponseLedger", "IncidentDecisionStore", "IncidentLedgerResult", "InMemoryIncidentDecisionStore",

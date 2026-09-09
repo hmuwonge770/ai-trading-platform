@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from decimal import Decimal
 from enum import StrEnum
-from math import isfinite
 
 
 class ProductionOperationAction(StrEnum):
@@ -104,11 +103,11 @@ def assess_production_operation(
         not observation.strategy_version_id or not observation.strategy_fingerprint
     ):
         reasons.append("strategy_identity_missing")
-    if not observation.live_authorized:
+    if policy.require_live_authorization and not observation.live_authorized:
         reasons.append("live_authorization_missing")
-    if not observation.runtime_enabled:
+    if policy.require_runtime_enabled and not observation.runtime_enabled:
         reasons.append("runtime_not_enabled")
-    if not observation.operator_shutdown_available:
+    if policy.require_operator_shutdown and not observation.operator_shutdown_available:
         reasons.append("operator_shutdown_unavailable")
     if observation.deployment_kill_switch_active:
         reasons.append("deployment_kill_switch_active")

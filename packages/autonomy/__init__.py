@@ -1,5 +1,7 @@
 """Autonomous trading control-plane primitives."""
 
+from .autonomous_lifecycle_validation import LifecycleValidationAction, LifecycleValidationAssessment, LifecycleValidationObservation, validate_lifecycle
+from .autonomous_lifecycle_validation_integration import AutonomousLifecycleValidationIntegration, LifecycleValidationContext
 from .controlled_expansion import ControlledExpansionPolicy, ExpansionAction, ExpansionReport, ExpansionRequest, evaluate_expansion
 from .controlled_expansion_integration import AutonomousControlledExpansionIntegration, ControlledExpansionContext
 from .controlled_expansion_ledger import ExpansionLedgerEntry, InMemoryExpansionLedger, expansion_report_digest
@@ -65,6 +67,7 @@ from .capital_allocation import AutonomousCapitalAllocator, CapitalAllocationRep
 from .capital_allocation_governance import AutonomousCapitalAllocationGovernance, CapitalGovernanceContext
 
 __all__ = [
+    "LifecycleValidationAction", "LifecycleValidationAssessment", "LifecycleValidationObservation", "validate_lifecycle", "AutonomousLifecycleValidationIntegration", "LifecycleValidationContext",
     "ControlledExpansionPolicy", "ExpansionAction", "ExpansionReport", "ExpansionRequest", "evaluate_expansion", "AutonomousControlledExpansionIntegration", "ControlledExpansionContext", "ExpansionLedgerEntry", "InMemoryExpansionLedger", "expansion_report_digest",
     "FailureAssessment", "FailureInjection", "FailureResponse", "FailureType", "assess_failure", "AutonomousEndToEndFailureGovernance", "FailureGovernanceContext",
     "SecurityAssessment", "SecurityHardeningPolicy", "SecurityObservation", "SecurityStatus", "assess_security", "AutonomousSecurityHardeningIntegration", "SecurityGovernanceContext",

@@ -14,6 +14,8 @@ def obs(**overrides):
         queue_depth=100, active_workers=8, worker_capacity=16, window=timedelta(seconds=600),
     )
     values.update(overrides)
+    if values["active_workers"] > values["worker_capacity"]:
+        values["worker_capacity"] = values["active_workers"]
     return OperationalObservation(**values)
 
 

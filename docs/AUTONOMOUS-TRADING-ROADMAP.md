@@ -100,15 +100,16 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 - **AQ — Production Canary:** merged to `main`; post-merge CI verified green.
 - **AR — Production Soak & Evidence:** merged to `main`; post-merge CI verified green.
 - **AS — Autonomous Incident Response:** merged to `main`; post-merge CI verified green.
-- **Next:** AT — Operational SLOs & Capacity.
+- **AT — Operational SLOs & Capacity:** merged to `main`; post-merge CI verified green.
+- **Next:** AU — Security Hardening.
 
-## Stage AS implementation phases
+## Stage AT implementation phases
 
-1. Incident contract & severity model.
-2. Deterministic incident detection and classification.
-3. Response planning and governance integration.
-4. Idempotent recovery and escalation ledger.
-5. Failure, integration, safety and regression coverage.
+1. Immutable SLO policy contract.
+2. Validated operational observation model.
+3. Deterministic SLO and capacity evaluator.
+4. Safety-gated governance integration.
+5. Boundary, failure, determinism and regression coverage.
 6. Documentation, CI, merge and post-merge verification.
 
 ## Completion rule

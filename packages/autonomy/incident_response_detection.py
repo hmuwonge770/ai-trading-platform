@@ -58,7 +58,23 @@ class AutonomousIncidentDetector:
             signals.append(IncidentSignal.EVIDENCE)
         if recovery_attempts:
             signals.append(IncidentSignal.RECOVERY)
-        severity = IncidentResponseSeverity.CRITICAL if signals else IncidentResponseSeverity.INFO
+
+        # A named reconciliation gap is an integrity incident even if the
+        # aggregate health flag has not yet flipped. It must never become
+        # a silent NO_ACTION result.
+        reconciliation_gap = code.strip().lower() in {
+            "reconciliation_gap",
+            "reconciliation_mismatch",
+            "reconciliation_failure",
+        }
+        if reconciliation_gap and IncidentSignal.RECONCILIATION not in signals:
+            signals.append(IncidentSignal.RECONCILIATION)
+
+        severity = (
+            IncidentResponseSeverity.CRITICAL
+            if signals
+            else IncidentResponseSeverity.INFO
+        )
         observation = IncidentObservation(
             incident_id=incident_id,
             fingerprint=fingerprint,

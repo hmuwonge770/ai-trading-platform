@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from datetime import timedelta
 from decimal import Decimal
 from enum import StrEnum
-import math
 
 
 class SLOStatus(StrEnum):

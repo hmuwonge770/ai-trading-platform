@@ -1,10 +1,8 @@
-from decimal import Decimal
-
 import pytest
 
 from packages.autonomy.production_operation import (
-    ProductionOperationAssessment,
     ProductionOperationAction,
+    ProductionOperationAssessment,
 )
 from packages.autonomy.production_operation_ledger import (
     InMemoryProductionOperationLedger,

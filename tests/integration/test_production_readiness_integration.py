@@ -1,3 +1,5 @@
+from dataclasses import replace
+
 from packages.autonomy.production_readiness import ProductionReadinessObservation, ReadinessStatus
 from packages.autonomy.production_readiness_integration import (
     AutonomousProductionReadinessIntegration,
@@ -27,10 +29,7 @@ def test_integration_preserves_ready_result():
 
 
 def test_integration_blocks_failed_preflight():
-    base = observation()
-    failed = ProductionReadinessObservation(
-        **{**base.__dict__, "runtime_preflight_passed": False}
-    )
+    failed = replace(observation(), runtime_preflight_passed=False)
     result = AutonomousProductionReadinessIntegration.assess(
         ProductionReadinessGovernanceContext(failed)
     )

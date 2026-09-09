@@ -104,7 +104,8 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 - **AU — Security Hardening:** merged to `main`; post-merge CI verified green.
 - **AV — End-to-End Failure Testing:** merged to `main`; merge commit `190161420ef60682f60099cc8689353f88ec17ac`; post-merge CI run `34326490542` verified green.
 - **AW — Production Readiness Review:** merged to `main`; merge commit `3031614c3b5fdc1fef7092ca9e42fddd58cd4b25`; post-merge CI run `34327141323` verified green.
-- **Next:** AX — Controlled Production Expansion.
+- **AX — Controlled Production Expansion:** merged to `main`; merge commit `60a025141d36ec7f5acc55acb4b4fd8c1d81ee0b`; post-merge CI run `34328872339` verified green.
+- **Next:** AY — Full Autonomous Lifecycle Validation.
 
 ## Stage AT implementation phases
 
@@ -140,6 +141,15 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 4. Boundary, failure and determinism coverage.
 5. Package exports and documentation.
 6. CI, merge, post-merge verification and roadmap advancement.
+
+## Stage AX implementation phases
+
+1. Immutable expansion contract and bounded ceilings.
+2. Deterministic expansion evaluator.
+3. Governance integration across canary, soak, promotion, risk, capital, runtime and kill-switch gates.
+4. Restart-safe idempotent decision ledger bound to strategy identity.
+5. Boundary, failure, malformed-input and safety coverage.
+6. Documentation, package exports, CI, merge and post-merge verification.
 
 ## Completion rule
 

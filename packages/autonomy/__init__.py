@@ -1,76 +1,71 @@
 """Autonomous trading control-plane primitives."""
 
-from .controlled_expansion import ControlledExpansionPolicy, ExpansionAction, ExpansionReport, ExpansionRequest, evaluate_expansion
-from .controlled_expansion_integration import AutonomousControlledExpansionIntegration, ControlledExpansionContext
-from .controlled_expansion_ledger import ExpansionLedgerEntry, InMemoryExpansionLedger, expansion_report_digest
-from .end_to_end_failure_testing import FailureAssessment, FailureInjection, FailureResponse, FailureType, assess_failure
-from .end_to_end_failure_testing_integration import AutonomousEndToEndFailureGovernance, FailureGovernanceContext
-from .security_hardening import SecurityAssessment, SecurityHardeningPolicy, SecurityObservation, SecurityStatus, assess_security
-from .security_hardening_integration import AutonomousSecurityHardeningIntegration, SecurityGovernanceContext
-from .operational_slos import OperationalObservation, OperationalSLOPolicy, SLOStatus
-from .operational_slos_governance import AutonomousOperationalSLOGovernance, OperationalSLOReport
-from .operational_slos_integration import AutonomousOperationalSLOIntegration, OperationalGovernanceContext
-from .production_readiness import ProductionReadinessAssessment, ProductionReadinessObservation, ProductionReadinessPolicy, ReadinessStatus, assess_production_readiness
-from .production_readiness_integration import AutonomousProductionReadinessIntegration, ProductionReadinessGovernanceContext
-from .production_soak import ProductionSoakAction, ProductionSoakEvidence, ProductionSoakPolicy, build_evidence_digest
-from .production_soak_governance import AutonomousProductionSoakGovernance, ProductionSoakReport
-from .production_soak_integration import AutonomousProductionSoakIntegration
-from .incident_response import AutonomousIncidentResponse, IncidentObservation, IncidentResponseAction, IncidentResponsePolicy, IncidentResponseReport, IncidentResponseSeverity
-from .incident_response_detection import AutonomousIncidentDetector, IncidentDetectionReport, IncidentSignal
-from .incident_response_integration import AutonomousIncidentResponseIntegration, IncidentResponseContext, IncidentResponseDecision
-from .incident_response_ledger import IdempotentIncidentResponseLedger, IncidentDecisionStore, IncidentLedgerResult, InMemoryIncidentDecisionStore
-from .multi_instance import AutonomousInstanceCoordinator, CoordinationLease, CoordinationReport, CoordinationStatus, CoordinationStore, InMemoryCoordinationStore
-from .alert_delivery import AlertDeliveryReport, AlertDeliveryStatus, AlertSeverity as DeliveryAlertSeverity, AutonomousAlertDelivery, OperationalAlert, OperationalAlertSink
-from .authorization_consumption import AutonomousLiveAuthorizationConsumer, AuthorizationConsumptionReport, AuthorizationConsumptionStatus, LiveExecutionAuthorization
-from .authorization_freshness import AutonomousAuthorizationFreshnessGuard, AuthorizationFreshnessContext, AuthorizationFreshnessReport, AuthorizationFreshnessStatus
-from .authorization_preflight import AuthorizationPreflightReport, AuthorizationPreflightStatus, AutonomousLiveAuthorizationPreflight
-from .connectivity import AutonomousConnectivityMonitor, ConnectivityPolicy, ConnectivityProbe, ConnectivityReport, ConnectivityState
-from .control import AutonomousControl, AutonomousMode, AutonomousState
-from .execution import AutonomousExecutionLoop, AutonomousExecutionOutcome, ExecutionSubmitter
-from .health_state import AutonomousHealthStateMachine, AutonomousHealthState, HealthObservation, HealthStatePolicy, HealthStateReport
-from .intelligence import AISignalModel, AISignalProposal, AutonomousMarketIntelligence, DeterministicRegimeDetector, IntelligencePolicy, MarketRegime, RegimeAssessment
-from .learning import DriftAssessment, LearningAction, LearningPolicy, StrategyLearningEngine, StrategyPerformance
-from .live_adapter import AutonomousLiveAdapterPreflight, LiveAdapterPolicy, LiveAdapterPreflightContext, LiveAdapterPreflightReport, LiveAdapterStatus, LiveExchangeTransport
-from .live_execution import AutonomousLiveExecutionBoundary, LiveExecutionReport, LiveExecutionStatus, LiveExecutionSubmitter
-from .live_orchestration import AutonomousLiveRuntimeOrchestrator, LiveOrchestrationReport, LiveOrchestrationStatus
-from .live_runtime import AutonomousLiveRuntimeGuard, LiveRuntimeConfig, LiveRuntimeMode, LiveRuntimeReport
-from .loop import AutonomousSignalLoop, MarketEvent
-from .observability import ExecutionAuditEvent, ExecutionAuditSink, ExecutionAuditStatus
-from .monitoring import AlertSeverity, AutonomousExecutionMonitor, MonitoringAlert, MonitoringAlertSink, MonitoringPolicy, MonitoringReport, MonitoringStatus, RuntimeHealthSnapshot
-from .paper_runner import AutonomousPaperRunner, PaperRunOutcome
-from .performance import AutonomousTestnetPerformanceMonitor, ExecutionObservation, PerformancePolicy, PerformanceReport, PerformanceStatus
-from .positions import AutonomousPositionAgent, ManagedPosition, PositionAction, PositionDecision, PositionPolicy
-from .position_recovery import AutonomousPositionRecovery, ExpectedPosition, ObservedPosition, PositionRecoveryAction, PositionRecoveryPolicy, PositionRecoveryReport, PositionRecoveryStatus
-from .persistent_state import AutonomousPersistentState, AutonomousStateSnapshot, InMemoryPersistentStateStore, JsonFilePersistentStateStore, PersistentStatePolicy, PersistentStateReport, PersistentStateStatus, PersistentStateStore
-from .promotion import AutonomousPromotionReadinessGate, PromotionEvidence, PromotionReadinessPolicy, PromotionReadinessReport, PromotionReadinessStatus
-from .promotion_integration import AutonomousPromotionWorkflowIntegration, PromotionEvidenceBinding, PromotionHandoffStatus
-from .promotion_governance import AutonomousPromotionGovernance, PromotionGovernanceAction, PromotionGovernanceReport, PromotionGovernanceRequest
-from .promotion_governance_integration import AutonomousPromotionGovernanceIntegration, GovernedPromotionReport
-from .production_canary import AutonomousProductionCanaryGovernance, ProductionCanaryAction, ProductionCanaryPolicy, ProductionCanaryReport, ProductionCanaryRequest
-from .production_canary_integration import AutonomousProductionCanaryIntegration, ProductionCanaryGovernanceContext
-from .recovery import AutonomousRecoveryEngine, RecoveryAction, RecoveryDecision, RecoveryEvent, RecoveryPolicy, RecoveryState
-from .reconciliation import AutonomousTestnetReconciler, ExchangeSnapshot, ExpectedOrder, ObservedOrder, ReconciliationPolicy, ReconciliationResult, ReconciliationStatus, TestnetStateProvider
-from .risk import AutonomousRiskEngine, AutonomousRiskPolicy, AutonomousRiskResult
-from .risk_policy_governance import AutonomousRiskPolicyGovernance, RiskPolicy, RiskPolicyReason, RiskPolicyReport, RiskPolicyRequest
-from .risk_policy_governance_integration import AutonomousCapitalRiskGovernance, GovernedCapitalRiskReport
-from .testnet import BinanceTestnetExecutionSubmitter, TestnetExecutionPolicy, TestnetExecutionTransport
-from .testnet_runner import AutonomousTestnetRunner, TestnetRunOutcome
-from .incident_lifecycle import Incident, IncidentLifecycle, IncidentSeverity, IncidentStatus, IncidentStore
-from .order_recovery import AutonomousOrderLifecycleRecovery, OrderLifecycleState, OrderRecoveryAction, OrderRecoveryEvent, OrderRecoveryPolicy, OrderRecoveryReport
-from .disaster_recovery import AutonomousDisasterRecovery, DisasterRecoveryPolicy, DisasterRecoveryReport, RecoveryCheckpoint, RecoverySnapshot, RecoveryStatus, RecoveryAction as DisasterRecoveryAction
-from .strategy_lifecycle import AutonomousStrategyLifecycle, StrategyLifecycleAction, StrategyLifecyclePolicy, StrategyLifecycleReport, StrategyLifecycleState
-from .strategy_evaluation import AutonomousStrategyEvaluator, StrategyEvaluationAction, StrategyEvaluationPolicy, StrategyEvaluationReport, StrategyEvaluationStatus
-from .strategy_retirement import AutonomousStrategyRetirement, StrategyRetirementAction, StrategyRetirementReport
-from .capital_allocation import AutonomousCapitalAllocator, CapitalAllocationReport, CapitalAllocationRequest
-from .capital_allocation_governance import AutonomousCapitalAllocationGovernance, CapitalGovernanceContext
+# This package intentionally re-exports subsystem APIs for compatibility.
+from .controlled_expansion import *  # noqa: F403
+from .controlled_expansion_integration import *  # noqa: F403
+from .controlled_expansion_ledger import *  # noqa: F403
+from .end_to_end_failure_testing import *  # noqa: F403
+from .end_to_end_failure_testing_integration import *  # noqa: F403
+from .security_hardening import *  # noqa: F403
+from .security_hardening_integration import *  # noqa: F403
+from .operational_slos import *  # noqa: F403
+from .operational_slos_governance import *  # noqa: F403
+from .operational_slos_integration import *  # noqa: F403
+from .production_readiness import *  # noqa: F403
+from .production_readiness_integration import *  # noqa: F403
+from .production_soak import *  # noqa: F403
+from .production_soak_governance import *  # noqa: F403
+from .production_soak_integration import *  # noqa: F403
+from .incident_response import *  # noqa: F403
+from .incident_response_detection import *  # noqa: F403
+from .incident_response_integration import *  # noqa: F403
+from .incident_response_ledger import *  # noqa: F403
+from .multi_instance import *  # noqa: F403
+from .alert_delivery import *  # noqa: F403
+from .authorization_consumption import *  # noqa: F403
+from .authorization_freshness import *  # noqa: F403
+from .authorization_preflight import *  # noqa: F403
+from .connectivity import *  # noqa: F403
+from .control import *  # noqa: F403
+from .execution import *  # noqa: F403
+from .health_state import *  # noqa: F403
+from .intelligence import *  # noqa: F403
+from .learning import *  # noqa: F403
+from .live_adapter import *  # noqa: F403
+from .live_execution import *  # noqa: F403
+from .live_orchestration import *  # noqa: F403
+from .live_runtime import *  # noqa: F403
+from .loop import *  # noqa: F403
+from .observability import *  # noqa: F403
+from .monitoring import *  # noqa: F403
+from .paper_runner import *  # noqa: F403
+from .performance import *  # noqa: F403
+from .positions import *  # noqa: F403
+from .position_recovery import *  # noqa: F403
+from .persistent_state import *  # noqa: F403
+from .promotion import *  # noqa: F403
+from .promotion_integration import *  # noqa: F403
+from .promotion_governance import *  # noqa: F403
+from .promotion_governance_integration import *  # noqa: F403
+from .production_canary import *  # noqa: F403
+from .production_canary_integration import *  # noqa: F403
+from .recovery import *  # noqa: F403
+from .reconciliation import *  # noqa: F403
+from .risk import *  # noqa: F403
+from .risk_policy_governance import *  # noqa: F403
+from .risk_policy_governance_integration import *  # noqa: F403
+from .testnet import *  # noqa: F403
+from .testnet_runner import *  # noqa: F403
+from .incident_lifecycle import *  # noqa: F403
+from .order_recovery import *  # noqa: F403
+from .disaster_recovery import *  # noqa: F403
+from .strategy_lifecycle import *  # noqa: F403
+from .strategy_evaluation import *  # noqa: F403
+from .strategy_retirement import *  # noqa: F403
+from .capital_allocation import *  # noqa: F403
+from .capital_allocation_governance import *  # noqa: F403
+from .autonomous_lifecycle_validation import *  # noqa: F403
+from .autonomous_lifecycle_validation_integration import *  # noqa: F403
+from .autonomous_lifecycle_validation_ledger import *  # noqa: F403
 
-__all__ = [
-    "ControlledExpansionPolicy", "ExpansionAction", "ExpansionReport", "ExpansionRequest", "evaluate_expansion", "AutonomousControlledExpansionIntegration", "ControlledExpansionContext", "ExpansionLedgerEntry", "InMemoryExpansionLedger", "expansion_report_digest",
-    "FailureAssessment", "FailureInjection", "FailureResponse", "FailureType", "assess_failure", "AutonomousEndToEndFailureGovernance", "FailureGovernanceContext",
-    "SecurityAssessment", "SecurityHardeningPolicy", "SecurityObservation", "SecurityStatus", "assess_security", "AutonomousSecurityHardeningIntegration", "SecurityGovernanceContext",
-    "OperationalObservation", "OperationalSLOPolicy", "SLOStatus", "AutonomousOperationalSLOGovernance", "OperationalSLOReport", "AutonomousOperationalSLOIntegration", "OperationalGovernanceContext",
-    "ProductionReadinessAssessment", "ProductionReadinessObservation", "ProductionReadinessPolicy", "ReadinessStatus", "assess_production_readiness", "AutonomousProductionReadinessIntegration", "ProductionReadinessGovernanceContext",
-    "AutonomousIncidentResponse", "IncidentObservation", "IncidentResponseAction", "IncidentResponsePolicy", "IncidentResponseReport", "IncidentResponseSeverity", "AutonomousIncidentDetector", "IncidentDetectionReport", "IncidentSignal", "AutonomousIncidentResponseIntegration", "IncidentResponseContext", "IncidentResponseDecision", "IdempotentIncidentResponseLedger", "IncidentDecisionStore", "IncidentLedgerResult", "InMemoryIncidentDecisionStore",
-    "ProductionSoakAction", "ProductionSoakEvidence", "ProductionSoakPolicy", "build_evidence_digest", "AutonomousProductionSoakGovernance", "ProductionSoakReport", "AutonomousProductionSoakIntegration",
-    "AutonomousInstanceCoordinator", "CoordinationLease", "CoordinationReport", "CoordinationStatus", "CoordinationStore", "InMemoryCoordinationStore", "AlertDeliveryReport", "AlertDeliveryStatus", "DeliveryAlertSeverity", "AutonomousAlertDelivery", "OperationalAlert", "OperationalAlertSink", "AutonomousLiveAuthorizationConsumer", "AuthorizationConsumptionReport", "AuthorizationConsumptionStatus", "LiveExecutionAuthorization", "AuthorizationFreshnessContext", "AuthorizationFreshnessReport", "AuthorizationFreshnessStatus", "AutonomousAuthorizationFreshnessGuard", "AuthorizationPreflightReport", "AuthorizationPreflightStatus", "AutonomousLiveAuthorizationPreflight", "AutonomousConnectivityMonitor", "ConnectivityPolicy", "ConnectivityProbe", "ConnectivityReport", "ConnectivityState", "AutonomousControl", "AutonomousMode", "AutonomousState", "AutonomousSignalLoop", "MarketEvent", "AutonomousHealthStateMachine", "AutonomousHealthState", "HealthObservation", "HealthStatePolicy", "HealthStateReport", "AISignalModel", "AISignalProposal", "AutonomousMarketIntelligence", "DeterministicRegimeDetector", "IntelligencePolicy", "MarketRegime", "RegimeAssessment", "AutonomousRiskEngine", "AutonomousRiskPolicy", "AutonomousRiskResult", "AutonomousExecutionLoop", "AutonomousExecutionOutcome", "ExecutionSubmitter", "AutonomousLiveExecutionBoundary", "LiveExecutionReport", "LiveExecutionStatus", "LiveExecutionSubmitter", "AutonomousLiveAdapterPreflight", "LiveAdapterPolicy", "LiveAdapterPreflightContext", "LiveAdapterPreflightReport", "LiveAdapterStatus", "LiveExchangeTransport", "AutonomousLiveRuntimeGuard", "LiveRuntimeConfig", "LiveRuntimeMode", "LiveRuntimeReport", "AutonomousLiveRuntimeOrchestrator", "LiveOrchestrationReport", "LiveOrchestrationStatus", "ExecutionAuditEvent", "ExecutionAuditSink", "ExecutionAuditStatus", "AlertSeverity", "AutonomousExecutionMonitor", "MonitoringAlert", "MonitoringAlertSink", "MonitoringPolicy", "MonitoringReport", "MonitoringStatus", "RuntimeHealthSnapshot", "AutonomousPositionAgent", "ManagedPosition", "PositionAction", "PositionDecision", "PositionPolicy", "AutonomousPositionRecovery", "ExpectedPosition", "ObservedPosition", "PositionRecoveryAction", "PositionRecoveryPolicy", "PositionRecoveryReport", "PositionRecoveryStatus", "AutonomousPersistentState", "AutonomousStateSnapshot", "InMemoryPersistentStateStore", "JsonFilePersistentStateStore", "PersistentStatePolicy", "PersistentStateReport", "PersistentStateStatus", "PersistentStateStore", "DriftAssessment", "LearningAction", "LearningPolicy", "StrategyLearningEngine", "StrategyPerformance", "AutonomousRecoveryEngine", "RecoveryAction", "RecoveryDecision", "RecoveryEvent", "RecoveryPolicy", "RecoveryState", "AutonomousPaperRunner", "PaperRunOutcome", "AutonomousTestnetPerformanceMonitor", "ExecutionObservation", "PerformancePolicy", "PerformanceReport", "PerformanceStatus", "AutonomousPromotionReadinessGate", "PromotionEvidence", "PromotionReadinessPolicy", "PromotionReadinessReport", "PromotionReadinessStatus", "AutonomousPromotionWorkflowIntegration", "PromotionEvidenceBinding", "PromotionHandoffStatus", "AutonomousPromotionGovernance", "PromotionGovernanceAction", "PromotionGovernanceReport", "PromotionGovernanceRequest", "AutonomousPromotionGovernanceIntegration", "GovernedPromotionReport", "AutonomousProductionCanaryGovernance", "ProductionCanaryAction", "ProductionCanaryPolicy", "ProductionCanaryReport", "ProductionCanaryRequest", "AutonomousProductionCanaryIntegration", "ProductionCanaryGovernanceContext", "BinanceTestnetExecutionSubmitter", "TestnetExecutionPolicy", "TestnetExecutionTransport", "AutonomousTestnetRunner", "TestnetRunOutcome", "AutonomousTestnetReconciler", "ExchangeSnapshot", "ExpectedOrder", "ObservedOrder", "ReconciliationPolicy", "ReconciliationResult", "ReconciliationStatus", "TestnetStateProvider", "AutonomousRiskPolicyGovernance", "RiskPolicy", "RiskPolicyReason", "RiskPolicyReport", "RiskPolicyRequest", "AutonomousCapitalRiskGovernance", "GovernedCapitalRiskReport", "Incident", "IncidentLifecycle", "IncidentSeverity", "IncidentStatus", "IncidentStore", "AutonomousOrderLifecycleRecovery", "OrderLifecycleState", "OrderRecoveryAction", "OrderRecoveryEvent", "OrderRecoveryPolicy", "OrderRecoveryReport", "AutonomousDisasterRecovery", "DisasterRecoveryPolicy", "DisasterRecoveryReport", "RecoveryCheckpoint", "RecoverySnapshot", "RecoveryStatus", "DisasterRecoveryAction", "AutonomousStrategyLifecycle", "StrategyLifecycleAction", "StrategyLifecyclePolicy", "StrategyLifecycleReport", "StrategyLifecycleState", "AutonomousStrategyEvaluator", "StrategyEvaluationAction", "StrategyEvaluationPolicy", "StrategyEvaluationReport", "StrategyEvaluationStatus", "AutonomousStrategyRetirement", "StrategyRetirementAction", "StrategyRetirementReport", "AutonomousCapitalAllocator", "CapitalAllocationReport", "CapitalAllocationRequest", "AutonomousCapitalAllocationGovernance", "CapitalGovernanceContext",
-]
+__all__ = [name for name in globals() if not name.startswith("_")]

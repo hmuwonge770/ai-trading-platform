@@ -1,5 +1,8 @@
 """Autonomous trading control-plane primitives."""
 
+from .controlled_expansion import ControlledExpansionPolicy, ExpansionAction, ExpansionReport, ExpansionRequest, evaluate_expansion
+from .controlled_expansion_integration import AutonomousControlledExpansionIntegration, ControlledExpansionContext
+from .controlled_expansion_ledger import ExpansionLedgerEntry, InMemoryExpansionLedger, expansion_report_digest
 from .end_to_end_failure_testing import FailureAssessment, FailureInjection, FailureResponse, FailureType, assess_failure
 from .end_to_end_failure_testing_integration import AutonomousEndToEndFailureGovernance, FailureGovernanceContext
 from .security_hardening import SecurityAssessment, SecurityHardeningPolicy, SecurityObservation, SecurityStatus, assess_security
@@ -62,6 +65,7 @@ from .capital_allocation import AutonomousCapitalAllocator, CapitalAllocationRep
 from .capital_allocation_governance import AutonomousCapitalAllocationGovernance, CapitalGovernanceContext
 
 __all__ = [
+    "ControlledExpansionPolicy", "ExpansionAction", "ExpansionReport", "ExpansionRequest", "evaluate_expansion", "AutonomousControlledExpansionIntegration", "ControlledExpansionContext", "ExpansionLedgerEntry", "InMemoryExpansionLedger", "expansion_report_digest",
     "FailureAssessment", "FailureInjection", "FailureResponse", "FailureType", "assess_failure", "AutonomousEndToEndFailureGovernance", "FailureGovernanceContext",
     "SecurityAssessment", "SecurityHardeningPolicy", "SecurityObservation", "SecurityStatus", "assess_security", "AutonomousSecurityHardeningIntegration", "SecurityGovernanceContext",
     "OperationalObservation", "OperationalSLOPolicy", "SLOStatus", "AutonomousOperationalSLOGovernance", "OperationalSLOReport", "AutonomousOperationalSLOIntegration", "OperationalGovernanceContext",

@@ -67,5 +67,8 @@ from .capital_allocation_governance import *  # noqa: F403
 from .autonomous_lifecycle_validation import *  # noqa: F403
 from .autonomous_lifecycle_validation_integration import *  # noqa: F403
 from .autonomous_lifecycle_validation_ledger import *  # noqa: F403
+from .production_operation import *  # noqa: F403
+from .production_operation_integration import *  # noqa: F403
+from .production_operation_ledger import *  # noqa: F403
 
 __all__ = [name for name in globals() if not name.startswith("_")]

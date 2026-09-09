@@ -103,7 +103,8 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 - **AT — Operational SLOs & Capacity:** merged to `main`; post-merge CI verified green.
 - **AU — Security Hardening:** merged to `main`; post-merge CI verified green.
 - **AV — End-to-End Failure Testing:** merged to `main`; merge commit `190161420ef60682f60099cc8689353f88ec17ac`; post-merge CI run `34326490542` verified green.
-- **Next:** AW — Production Readiness Review.
+- **AW — Production Readiness Review:** merged to `main`; merge commit `3031614c3b5fdc1fef7092ca9e42fddd58cd4b25`; post-merge CI run `34327141323` verified green.
+- **Next:** AX — Controlled Production Expansion.
 
 ## Stage AT implementation phases
 
@@ -130,6 +131,15 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 4. Boundary, failure and determinism coverage.
 5. Package exports and documentation.
 6. CI, merge and post-merge verification.
+
+## Stage AW implementation phases
+
+1. Immutable production-readiness policy and observation contract.
+2. Deterministic readiness evaluator.
+3. Governance integration and strategy identity binding.
+4. Boundary, failure and determinism coverage.
+5. Package exports and documentation.
+6. CI, merge, post-merge verification and roadmap advancement.
 
 ## Completion rule
 

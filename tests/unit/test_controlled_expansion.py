@@ -4,7 +4,6 @@ from uuid import UUID
 import pytest
 
 from packages.autonomy.controlled_expansion import (
-    ControlledExpansionPolicy,
     ExpansionAction,
     ExpansionRequest,
     evaluate_expansion,

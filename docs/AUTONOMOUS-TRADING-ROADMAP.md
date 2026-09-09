@@ -106,7 +106,8 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 - **AW — Production Readiness Review:** merged to `main`; merge commit `3031614c3b5fdc1fef7092ca9e42fddd58cd4b25`; post-merge CI run `34327141323` verified green.
 - **AX — Controlled Production Expansion:** merged to `main`; merge commit `60a025141d36ec7f5acc55acb4b4fd8c1d81ee0b`; post-merge CI run `34328872339` verified green.
 - **AY — Full Autonomous Lifecycle Validation:** merged to `main`; merge commit `6c83b31fd96b96ef3d3114817cb2adbde7fc54b0`; post-merge CI run `34330738048` verified green.
-- **Next:** AZ — Fully Autonomous Production Operation.
+- **AZ — Fully Autonomous Production Operation:** merged to `main`; merge commit `3d38488ee66853d878822e3e035f7e16b06464f7`; post-merge CI run `34332383498` verified green.
+- **Roadmap:** AZ is the final milestone; no subsequent stage.
 
 ## Stage AT implementation phases
 
@@ -160,6 +161,15 @@ AZ does not mean unrestricted autonomy. AI cannot bypass risk, disable safety co
 4. Restart-safe idempotent validation ledger and deterministic decision digest.
 5. Boundary, malformed-input, concurrency and safety regression coverage.
 6. Documentation, package exports, CI, merge and post-merge verification.
+
+## Stage AZ implementation phases
+
+1. Immutable production-operation contract and hard safety ceilings.
+2. Deterministic production-operation evaluator.
+3. Cross-stage governance integration for readiness, lifecycle, capital, risk, security, incident, canary and soak evidence.
+4. Restart/replay-safe decision digest and idempotent operation ledger contract.
+5. Boundary, malformed-input, kill-switch, reconciliation and determinism coverage.
+6. Documentation, package exports, CI, merge, post-merge verification and roadmap completion.
 
 ## Completion rule
 

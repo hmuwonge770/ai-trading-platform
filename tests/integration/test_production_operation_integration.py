@@ -1,3 +1,4 @@
+from dataclasses import replace
 from decimal import Decimal
 
 from packages.autonomy.production_operation import ProductionOperationAction
@@ -42,12 +43,8 @@ def test_integration_is_control_plane_only_and_deterministic() -> None:
 
 def test_integration_halts_on_kill_switch() -> None:
     integration = AutonomousProductionOperationIntegration()
-    blocked = context().__class__(
-        **{name: getattr(context(), name) for name in context().__dataclass_fields__}
+    assessment = integration.assess(
+        replace(context(), deployment_kill_switch_active=True)
     )
-    blocked = blocked.__class__(
-        **{**{name: getattr(blocked, name) for name in blocked.__dataclass_fields__}, "deployment_kill_switch_active": True}
-    )
-    assessment = integration.assess(blocked)
     assert assessment.action is ProductionOperationAction.HALT
     assert "deployment_kill_switch_active" in assessment.reasons
